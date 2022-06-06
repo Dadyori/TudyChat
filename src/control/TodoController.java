@@ -48,24 +48,20 @@ public class TodoController {
     /**
      * 할 일 추가
      */
-    public Integer addTodo(Integer chat_id, String todoTitle){
+    public Boolean addTodo(Integer chat_id, String todoTitle){
         String sql = "insert into todo (chat_id, title) values(?, ?);";
         PreparedStatement pstmt = null;
 
         try{
-            if (checkTodoDuplicate(chat_id, todoTitle)) {
-                System.out.println("이미 등록된 할일");
-                return 2;
-            }
             pstmt=connection.prepareStatement(sql);
             pstmt.setInt(1, chat_id);
             pstmt.setString(2, todoTitle);
             pstmt.executeUpdate();
             System.out.println("할 일 추가 성공");
-            return 1;
+            return true;
         } catch (SQLException e){
             e.printStackTrace();
-            return 3;
+            return false;
         }
     }
 

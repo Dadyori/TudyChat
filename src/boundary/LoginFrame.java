@@ -1,5 +1,7 @@
 package boundary;
 
+import control.MemberController;
+
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
@@ -25,6 +27,7 @@ public class LoginFrame {
    private JFrame frame;
    private JTextField idTextField;
    private JPasswordField pwTextField;
+   MemberController memberController = new MemberController();
 
    /**
     * Launch the application.
@@ -105,14 +108,14 @@ public class LoginFrame {
       lblNewLabel_2.setHorizontalAlignment(SwingConstants.CENTER);
       lblNewLabel_2.setForeground(new Color(0, 0, 255));
       lblNewLabel_2.setFont(new Font("맑은 고딕", Font.PLAIN, 30));
-      lblNewLabel_2.setBounds(148, 35, 78, 74);
+      lblNewLabel_2.setBounds(148, 40, 78, 74);
       panel.add(lblNewLabel_2);
       
       JLabel lblNewLabel_2_1 = new JLabel("CHAT");
       lblNewLabel_2_1.setHorizontalAlignment(SwingConstants.CENTER);
       lblNewLabel_2_1.setForeground(new Color(0, 0, 255));
       lblNewLabel_2_1.setFont(new Font("맑은 고딕", Font.PLAIN, 30));
-      lblNewLabel_2_1.setBounds(148, 96, 78, 74);
+      lblNewLabel_2_1.setBounds(148, 75, 78, 74);
       panel.add(lblNewLabel_2_1);
       
       pwTextField = new JPasswordField();
@@ -123,30 +126,24 @@ public class LoginFrame {
       //로그인 버튼 동작시
       loginButton.addActionListener(new ActionListener() {
          public void actionPerformed(ActionEvent e) {
-            String userId = "dan";	//아이디
-            String userPw = "1234";	//비밀번호
-            
-            //로그인 성공시
-            if(userId.equals(idTextField.getText())&&userPw.equals(pwTextField.getText())) {
+            String id = idTextField.getText();
+            String password = pwTextField.getText();
+            if(id.isBlank() || password.isBlank()){
+               JOptionPane.showMessageDialog(null, "아이디/비밀번호를 모두 입력해주세요.");
+            }
+            int successLogin = memberController.login(id, password);
+            if (successLogin == 1){
                JOptionPane.showMessageDialog(null, "로그인 되었습니다.");
                frame.dispose();	//LoginFrame 닫음
                MainFrame main = new MainFrame();
                main.setVisible(true); //MainFrame 켬
             }
-            /*
-            //가입하지 않은 아이디로 로그인 버튼을 누른 경우
-            else if(){
-            	JOptionPane.showMessageDialog(null, "가입된 아이디가 아닙니다. 회원가입을 진행해주세요.");
+            else if (successLogin == 3){
+               JOptionPane.showMessageDialog(null, "가입된 아이디가 아닙니다. 회원가입을 진행해주세요.");
             }
-            //가입한 비밀번호와 다른 비밀번호로 로그인 버튼을 누른 경우
-            else if(){
-            	JOptionPane.showMessageDialog(null, "비밀번호가 일치하지 않습니다. 다시 확인해주세요.");
+            else if (successLogin == 2){
+               JOptionPane.showMessageDialog(null, "비밀번호가 일치하지 않습니다. 다시 확인해주세요.");
             }
-            //아이디, 비밀번호 중 하나라도 입력하지 않고 로그인 버튼을 누른경우
-             else if(idTextField.getText().isBlank() || pwTextField.getText().isBlank()){
-            	JOptionPane.showMessageDialog(null, "아이디/비밀번호를 모두 입력해주세요.");
-            }
-            */
             else {
                JOptionPane.showMessageDialog(null, "아이디와 비밀번호가 틀립니다");
             }

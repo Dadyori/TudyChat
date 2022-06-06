@@ -11,11 +11,12 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 
 public class TodoFrame extends JPanel {
-
+	private int chatId;
 	/**
 	 * Create the panel.
 	 */
-	public TodoFrame() {
+	public TodoFrame(int chatId) {
+		this.chatId=chatId;
 		setBounds(12, 50, 283, 502);
 		setLayout(null);
 		
@@ -38,7 +39,7 @@ public class TodoFrame extends JPanel {
 	      
 	    addTodoButton.addActionListener(new ActionListener() {
 	    	public void actionPerformed(ActionEvent e) {
-	    		AddTodoFrame add = new AddTodoFrame();
+	    		AddTodoFrame add = new AddTodoFrame(chatId);
 	    		add.setVisible(true);
 	    	}
 	    });

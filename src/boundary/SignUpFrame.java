@@ -1,5 +1,7 @@
 package boundary;
 
+import control.MemberController;
+
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
 
@@ -25,7 +27,9 @@ public class SignUpFrame extends JFrame {
 	private JTextField pwTextField;
 	private JTextField checkPwTextField;
 	private JTextField emailTextField;
-	
+	private Boolean idDuplicate = true;
+	MemberController memberController = new MemberController();
+
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -110,58 +114,61 @@ public class SignUpFrame extends JFrame {
 		//중복확인 버튼 동작시
 		checkIdButton.addActionListener(new ActionListener() {
 	    	  public void actionPerformed(ActionEvent e) {
-	    		  //boolean b= checkDuplicate(idTextField.getText());
-	    		  
-	    		  //아이디가 중복일 경우
-	    		  /*if(b) {
-	    			  JOptionPane.showMessageDialog(null, "이미 존재하는 아이디입니다.");
-	    		  }
-	   
+				  String id = idTextField.getText();
+				  boolean isDuplicate = memberController.checkDuplicate(id);
+				  if (isDuplicate){
+					  JOptionPane.showMessageDialog(null, "이미 존재하는 아이디입니다.");
+					  idDuplicate=true;
+					  idTextField.setText("");
+				  }
 	    		  else {
 	    			  JOptionPane.showMessageDialog(null, "사용가능한 아이디입니다.");
+	    			  idDuplicate=false;
 	    		  }
-	    		  */
 	    	  }
 	      });
 		
 		//회원가입 버튼 동작시
 		signUpButton.addActionListener(new ActionListener() {
 	    	  public void actionPerformed(ActionEvent e) {
-	    
-	    		  //비밀번호가 확인 란과 다를 때
+				  String userId = idTextField.getText();
+				  String userPw=pwTextField.getText();
+				  String name=nameTextField.getText();
+				  String email=emailTextField.getText();
+				  //비밀번호가 확인 란과 다를 때
 	    		  
 	    		  //아이디, 비밀번호 칸에 영어, 숫자 외의 다른 문자를 입력했을 경우
-	    		  if(idTextField.getText().matches(".*[ㄱ-ㅎㅏ-ㅣ가-힣]+.*") || pwTextField.getText().matches(".*[ㄱ-ㅎㅏ-ㅣ가-힣]+.*")) {
+				  //요구한 필드를 모두 채우지 않았을 경우
+	    		  if(userId.isBlank() || userPw.isBlank() || name.isBlank() || email.isBlank()) {
+					  JOptionPane.showMessageDialog(null, "회원가입에 필요한 필수 정보를 모두 입력해주세요.");
+				  }
+	    		  else if(userId.matches(".*[ㄱ-ㅎㅏ-ㅣ가-힣]+.*") || userPw.matches(".*[ㄱ-ㅎㅏ-ㅣ가-힣]+.*")) {
 	    			  JOptionPane.showMessageDialog(null, "아이디/비밀번호를 사용할 수 없습니다. 영어 대소문자, 숫자로 입력해주세요.");
 	    		  }
 	    		  //아이디가 20자 이상일 경우
-	    		  else if(idTextField.getText().length()>=20) {
+	    		  else if(userId.length()>=20) {
 	    			  JOptionPane.showMessageDialog(null, "아이디를 20자 이하로 설정해주세요.");
 	    		  }
 	    		  //비밀번호를 8자 이하, 20자 이상으로 입력했을 경우
-	    		  else if(pwTextField.getText().length()<8 || pwTextField.getText().length()>=20) {
+	    		  else if(userPw.length()<8 || userPw.length()>=20) {
 	    			  JOptionPane.showMessageDialog(null, "비밀번호를 8자 이상 20자 이하로 설정해주세요.");
 	    		  }
-	    		  //요구한 필드를 모두 채우지 않았을 경우
-	    		  else if(idTextField.getText().isBlank() || pwTextField.getText().isBlank() || nameTextField.getText().isBlank() || emailTextField.getText().isBlank()) {
-	    			  JOptionPane.showMessageDialog(null, "회원가입에 필요한 필수 정보를 모두 입력해주세요.");
-	    		  }
 	    		  //비밀번호 확인란에 앞서 작성한 비밀번호와 다른 비밀번호를 입력했을 경우
-	    		  else if(!pwTextField.getText().equals(checkPwTextField.getText())) {
+	    		  else if(!userPw.equals(checkPwTextField.getText())) {
 	    			  JOptionPane.showMessageDialog(null, "비밀번호가 일치하지 않습니다. 다시 확인해주세요.");
 	    		  }
+	    		  else if (idDuplicate) {
+	    		  	JOptionPane.showMessageDialog(null, "아이디 중복확인을 진행해주세요.");
+				  }
 	    		  else {
-	    			  String userId=idTextField.getText();
-		    		  String userPw=pwTextField.getText();
-		    		  String name=nameTextField.getText();
-		    		  String email=emailTextField.getText();
-		    		  //register(userId,userPw,name,email);
-		    		  JOptionPane.showMessageDialog(null, "회원가입이 완료됐습니다.");
-	    			  dispose();
+					  boolean successSignUp = memberController.signup(userId, userPw, name, email);
+					  if (successSignUp){
+						  JOptionPane.showMessageDialog(null, "회원가입이 완료됐습니다.");
+						  dispose();
+					  }
 	    		  }
 	    	  }
 	      });
-	
 	}
 	
 }

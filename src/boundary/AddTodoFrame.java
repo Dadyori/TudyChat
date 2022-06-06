@@ -1,5 +1,7 @@
 package boundary;
 
+import control.TodoController;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.EventQueue;
@@ -19,14 +21,16 @@ public class AddTodoFrame extends JFrame {
 
 	private JPanel contentPane;
 	private JTextField titleTextField;
+	private int chatId;
+	TodoController todoController = new TodoController();
 	/**
 	 * Launch the application.
 	 */
-	public static void main(String[] args) {
+	public static void main(String[] args, int chatroomId) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					AddTodoFrame frame = new AddTodoFrame();
+					AddTodoFrame frame = new AddTodoFrame(chatroomId);
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -38,7 +42,8 @@ public class AddTodoFrame extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public AddTodoFrame() {
+	public AddTodoFrame(int id) {
+		this.chatId=id;
 	    setBounds(100, 100, 319, 170);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		contentPane = new JPanel();
@@ -78,17 +83,18 @@ public class AddTodoFrame extends JFrame {
 	    addButton.addActionListener(new ActionListener() {
 	    	public void actionPerformed(ActionEvent e) {
 	    		//할 일을 입력하지 않고 추가버튼을 누르는 경우
-	    		if(titleTextField.getText().isBlank()) {
+				String todoTitle = titleTextField.getText();
+				if(todoTitle.isBlank()) {
 	    			JOptionPane.showMessageDialog(null, "할 일이 입력되지 않았습니다.");
 	    		  }
-	    		//이미 있는 리스트와 같은 이름의 리스트를 추가한다.
-	    		/*else if() {
-	    			JOptionPane.showMessageDialog(null, "할 일 목록에 이미 존재하는 항목입니다");
-	    		}*/
+				if (todoController.checkTodoDuplicate(id, todoTitle)){
+					JOptionPane.showMessageDialog(null, "할 일 목록에 이미 존재하는 항목입니다");
+				}
 	    		else {
-	    			//String todoTitle=titleTextField.getText();
-	    			//addTodo(chatId, todoTitle);
-	    			dispose();
+					Boolean successAddTodo = todoController.addTodo(chatId, todoTitle);
+					if (successAddTodo) {
+						dispose();
+					}
 	    		}
 	    	}
 	    });
