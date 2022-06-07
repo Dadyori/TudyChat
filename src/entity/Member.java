@@ -1,7 +1,5 @@
 package entity;
 
-import control.Server;
-
 import java.io.*;
 import java.net.Socket;
 import java.util.Vector;

@@ -9,11 +9,11 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.Color;
+import java.net.Socket;
 import javax.swing.JButton;
-import javax.swing.JTable;
-import javax.swing.ImageIcon;
 
 public class MainFrame extends JFrame{
+   private String userId;
 
    /**
     * Launch the application.
@@ -22,7 +22,7 @@ public class MainFrame extends JFrame{
       EventQueue.invokeLater(new Runnable() {
          public void run() {
             try {
-            	MainFrame window = new MainFrame();
+               MainFrame window = new MainFrame();
                window.setVisible(true);
             } catch (Exception e) {
                e.printStackTrace();
@@ -42,6 +42,7 @@ public class MainFrame extends JFrame{
     * Initialize the contents of the frame.
     */
    private void initialize() {
+
       this.setForeground(new Color(240, 230, 140));
       this.getContentPane().setForeground(new Color(255, 255, 255));
       this.setSize(900, 700);
@@ -83,7 +84,8 @@ public class MainFrame extends JFrame{
       timerButton.setFont(new Font("함초롬돋움", Font.PLAIN, 30));
       timerButton.setBounds(12, 562, 283, 91);
       panel.add(timerButton);
-      
+
+
       //새로고침 버튼 동작 시
       recallButton.addActionListener(new ActionListener() {
     	  public void actionPerformed(ActionEvent e) {
@@ -96,6 +98,14 @@ public class MainFrame extends JFrame{
     		  timer.setVisible(true);*/
     	  }
       });
+   }
+
+   public void connect() {
+      try {
+         Socket socket = new Socket("localhost", 9999);
+      } catch (Exception e){
+         e.printStackTrace();
+      }
    }
    
 }

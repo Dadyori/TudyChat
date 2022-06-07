@@ -1,7 +1,4 @@
-package control;
-
-import entity.Member;
-import entity.Room;
+package entity;
 
 import java.io.IOException;
 import java.net.ServerSocket;
