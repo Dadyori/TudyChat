@@ -12,11 +12,13 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 
 public class ChattingListFrame extends JPanel {
+	String userId;
 
 	/**
 	 * Create the panel.
 	 */
-	public ChattingListFrame() {
+	public ChattingListFrame(String id) {
+		this.userId=id;
 		setBounds(35, 66, 589, 517);
 		setBounds(307, 50, 567, 603);
 		setLayout(null);

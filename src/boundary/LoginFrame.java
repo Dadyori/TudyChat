@@ -1,6 +1,7 @@
 package boundary;
 
 import control.MemberController;
+import entity.Member;
 
 import java.awt.EventQueue;
 
@@ -21,134 +22,170 @@ import java.awt.SystemColor;
 import javax.swing.JPasswordField;
 import javax.swing.ImageIcon;
 import java.awt.Window;
+import java.io.*;
+import java.net.Socket;
+import java.net.UnknownHostException;
 
-public class LoginFrame {
+public class LoginFrame extends JFrame implements Runnable{
 
    private JFrame frame;
    private JTextField idTextField;
    private JPasswordField pwTextField;
+   private Socket socket;
+   private BufferedReader bufferedReader;
+   private PrintWriter printWriter;
+
+//   OutputStream os;
+//   DataOutputStream dataOutputStream;
+//   InputStream is;
+//   DataInputStream inputStream;
+
    MemberController memberController = new MemberController();
 
    /**
     * Launch the application.
     */
-   public static void main(String[] args) {
-      EventQueue.invokeLater(new Runnable() {
-         public void run() {
-            try {
-               LoginFrame window = new LoginFrame();
-               window.frame.setVisible(true);
-            } catch (Exception e) {
-               e.printStackTrace();
-            }
-         }
-      });
-   }
+//   public static void main(String[] args) {
+//      EventQueue.invokeLater(new Runnable() {
+//         public void run() {
+//            try {
+//               LoginFrame window = new LoginFrame();
+////               window.frame.setVisible(true);
+//            } catch (Exception e) {
+//               e.printStackTrace();
+//            }
+//         }
+//      });
+//   }
 
    /**
     * Create the application.
     */
-   public LoginFrame() {
-      Login();
-   }
+//   public LoginFrame() {
+//      Login();
+//      connect();
+//   }
 
-   /**
-    * Initialize the contents of the frame.
-    */
-   private void Login() {
-      frame = new JFrame();
-      frame.setLocationRelativeTo(null);
-      frame.getContentPane().setBackground(new Color(238, 232, 170));
-      frame.setForeground(new Color(204, 204, 153));
-      frame.setBackground(SystemColor.desktop);
-      frame.setSize(400, 600);
-      frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-      frame.getContentPane().setLayout(null);
-      
-      JPanel panel = new JPanel();
-      panel.setBackground(new Color(240, 230, 140));
-      panel.setForeground(new Color(230, 230, 250));
-      panel.setBounds(0, 10, 686, 710);
-      frame.getContentPane().add(panel);
-      panel.setLayout(null);
-      
-      JButton loginButton = new JButton("\uB85C\uADF8\uC778\uD558\uAE30");
-      loginButton.setFont(new Font("함초롬돋움", Font.PLAIN, 15));
-      loginButton.setBackground(new Color(245, 245, 220));
-      loginButton.setForeground(new Color(0, 0, 255));
-      loginButton.setBounds(135, 400, 126, 46);
-      panel.add(loginButton);
-      
-      JButton signUpButton = new JButton("회원가입");
-      signUpButton.setFont(new Font("함초롬돋움", Font.PLAIN, 15));
-      signUpButton.setBackground(new Color(245, 245, 220));
-      signUpButton.setForeground(new Color(0, 0, 255));
-      signUpButton.setBounds(135, 456, 126, 46);
-      panel.add(signUpButton);
-      
-      JLabel lblNewLabel = new JLabel("\uC544\uC774\uB514");
-      lblNewLabel.setForeground(new Color(0, 0, 255));
-      lblNewLabel.setFont(new Font("함초롬돋움", Font.PLAIN, 18));
-      lblNewLabel.setBounds(160, 194, 53, 46);
-      panel.add(lblNewLabel);
-      
-      idTextField = new JTextField();
-      idTextField.setBackground(new Color(245, 245, 220));
-      idTextField.setBounds(84, 239, 232, 39);
-      panel.add(idTextField);
-      idTextField.setColumns(10);
-      
-      JLabel lblNewLabel_1 = new JLabel("\uBE44\uBC00\uBC88\uD638");
-      lblNewLabel_1.setForeground(new Color(0, 0, 255));
-      lblNewLabel_1.setFont(new Font("함초롬돋움", Font.PLAIN, 18));
-      lblNewLabel_1.setBounds(160, 288, 88, 46);
-      panel.add(lblNewLabel_1);
-      
-      JLabel lblNewLabel_2 = new JLabel("TUDY");
-      lblNewLabel_2.setHorizontalAlignment(SwingConstants.CENTER);
-      lblNewLabel_2.setForeground(new Color(0, 0, 255));
-      lblNewLabel_2.setFont(new Font("맑은 고딕", Font.PLAIN, 30));
-      lblNewLabel_2.setBounds(148, 40, 78, 74);
-      panel.add(lblNewLabel_2);
-      
-      JLabel lblNewLabel_2_1 = new JLabel("CHAT");
-      lblNewLabel_2_1.setHorizontalAlignment(SwingConstants.CENTER);
-      lblNewLabel_2_1.setForeground(new Color(0, 0, 255));
-      lblNewLabel_2_1.setFont(new Font("맑은 고딕", Font.PLAIN, 30));
-      lblNewLabel_2_1.setBounds(148, 75, 78, 74);
-      panel.add(lblNewLabel_2_1);
-      
-      pwTextField = new JPasswordField();
-      pwTextField.setBackground(new Color(245, 245, 220));
-      pwTextField.setBounds(84, 328, 232, 46);
-      panel.add(pwTextField);
-      
+    public LoginFrame () {
+       connect();
+
+       frame = new JFrame();
+       frame.setLocationRelativeTo(null);
+       frame.getContentPane().setBackground(new Color(238, 232, 170));
+       frame.setForeground(new Color(204, 204, 153));
+       frame.setBackground(SystemColor.desktop);
+       frame.setSize(400, 600);
+       frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+       frame.getContentPane().setLayout(null);
+
+       JPanel panel = new JPanel();
+       panel.setBackground(new Color(240, 230, 140));
+       panel.setForeground(new Color(230, 230, 250));
+       panel.setBounds(0, 10, 686, 710);
+       frame.getContentPane().add(panel);
+       panel.setLayout(null);
+
+       JButton loginButton = new JButton("\uB85C\uADF8\uC778\uD558\uAE30");
+       loginButton.setFont(new Font("함초롬돋움", Font.PLAIN, 15));
+       loginButton.setBackground(new Color(245, 245, 220));
+       loginButton.setForeground(new Color(0, 0, 255));
+       loginButton.setBounds(135, 400, 126, 46);
+       panel.add(loginButton);
+
+       JButton signUpButton = new JButton("회원가입");
+       signUpButton.setFont(new Font("함초롬돋움", Font.PLAIN, 15));
+       signUpButton.setBackground(new Color(245, 245, 220));
+       signUpButton.setForeground(new Color(0, 0, 255));
+       signUpButton.setBounds(135, 456, 126, 46);
+       panel.add(signUpButton);
+
+       JLabel lblNewLabel = new JLabel("\uC544\uC774\uB514");
+       lblNewLabel.setForeground(new Color(0, 0, 255));
+       lblNewLabel.setFont(new Font("함초롬돋움", Font.PLAIN, 18));
+       lblNewLabel.setBounds(160, 194, 53, 46);
+       panel.add(lblNewLabel);
+
+       idTextField = new JTextField();
+       idTextField.setBackground(new Color(245, 245, 220));
+       idTextField.setBounds(84, 239, 232, 39);
+       panel.add(idTextField);
+       idTextField.setColumns(10);
+
+       JLabel lblNewLabel_1 = new JLabel("\uBE44\uBC00\uBC88\uD638");
+       lblNewLabel_1.setForeground(new Color(0, 0, 255));
+       lblNewLabel_1.setFont(new Font("함초롬돋움", Font.PLAIN, 18));
+       lblNewLabel_1.setBounds(160, 288, 88, 46);
+       panel.add(lblNewLabel_1);
+
+       JLabel lblNewLabel_2 = new JLabel("TUDY");
+       lblNewLabel_2.setHorizontalAlignment(SwingConstants.CENTER);
+       lblNewLabel_2.setForeground(new Color(0, 0, 255));
+       lblNewLabel_2.setFont(new Font("맑은 고딕", Font.PLAIN, 30));
+       lblNewLabel_2.setBounds(148, 40, 78, 74);
+       panel.add(lblNewLabel_2);
+
+       JLabel lblNewLabel_2_1 = new JLabel("CHAT");
+       lblNewLabel_2_1.setHorizontalAlignment(SwingConstants.CENTER);
+       lblNewLabel_2_1.setForeground(new Color(0, 0, 255));
+       lblNewLabel_2_1.setFont(new Font("맑은 고딕", Font.PLAIN, 30));
+       lblNewLabel_2_1.setBounds(148, 75, 78, 74);
+       panel.add(lblNewLabel_2_1);
+
+       pwTextField = new JPasswordField();
+       pwTextField.setBackground(new Color(245, 245, 220));
+       pwTextField.setBounds(84, 328, 232, 46);
+       panel.add(pwTextField);
+
+       frame.setVisible(true);
+       frame.setResizable(false);
+
       //로그인 버튼 동작시
       loginButton.addActionListener(new ActionListener() {
          public void actionPerformed(ActionEvent e) {
             String id = idTextField.getText();
             String password = pwTextField.getText();
-            if(id.isBlank() || password.isBlank()){
+            if (id.isBlank() || password.isBlank()) {
                JOptionPane.showMessageDialog(null, "아이디/비밀번호를 모두 입력해주세요.");
             }
-            int successLogin = memberController.login(id, password);
-            if (successLogin == 1){
-               JOptionPane.showMessageDialog(null, "로그인 되었습니다.");
-               frame.dispose();	//LoginFrame 닫음
-               MainFrame main = new MainFrame();
-               main.setVisible(true); //MainFrame 켬
+            String userInfo=id+"%"+password;
+            try {
+//               dataOutputStream.writeUTF("login\\|"+userInfo);
+//               System.out.println(dataOutputStream);
+               printWriter.println("login%"+userInfo);
+               printWriter.flush();
+
+            } catch (Exception ioException) {
+               ioException.printStackTrace();
             }
-            else if (successLogin == 3){
-               JOptionPane.showMessageDialog(null, "가입된 아이디가 아닙니다. 회원가입을 진행해주세요.");
-            }
-            else if (successLogin == 2){
-               JOptionPane.showMessageDialog(null, "비밀번호가 일치하지 않습니다. 다시 확인해주세요.");
-            }
-            else {
-               JOptionPane.showMessageDialog(null, "아이디와 비밀번호가 틀립니다");
-            }
+//            printWriter.println("login\\|"+userInfo);
+//            printWriter.flush();
+
+//            String id = idTextField.getText();
+//            String password = pwTextField.getText();
+//            if(id.isBlank() || password.isBlank()){
+//               JOptionPane.showMessageDialog(null, "아이디/비밀번호를 모두 입력해주세요.");
+//            }
+//            int successLogin = memberController.login(id, password);
+//            if (successLogin == 1){
+//               JOptionPane.showMessageDialog(null, "로그인 되었습니다.");
+//               frame.dispose();	//LoginFrame 닫음
+//               connect();
+//               MainFrame main = new MainFrame();
+//               main.setVisible(true); //MainFrame 켬
+//            }
+//            else if (successLogin == 3){
+//               JOptionPane.showMessageDialog(null, "가입된 아이디가 아닙니다. 회원가입을 진행해주세요.");
+//            }
+//            else if (successLogin == 2){
+//               JOptionPane.showMessageDialog(null, "비밀번호가 일치하지 않습니다. 다시 확인해주세요.");
+//            }
+//            else {
+//               JOptionPane.showMessageDialog(null, "아이디와 비밀번호가 틀립니다");
+//            }
          }
       });
+
+
       //회원가입 버튼 동작시
       signUpButton.addActionListener(new ActionListener() {
     	  public void actionPerformed(ActionEvent e) {
@@ -156,7 +193,74 @@ public class LoginFrame {
     		  sign.setVisible(true);
     	  }
       });
-      
    }
-   
+
+   public void connect() {
+      try {
+         socket = new Socket("localhost", 9999);
+//         inputStream = new DataInputStream(this.socket.getInputStream());
+//         dataOutputStream = new DataOutputStream(this.socket.getOutputStream());
+         bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+         printWriter = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
+      } catch (UnknownHostException e){
+         System.out.println("서버를 찾을 수 없습니다");
+         e.printStackTrace();
+         System.exit(0);
+      } catch (IOException e) {
+         System.out.println("서버와 연결이 안되었습니다");
+         e.printStackTrace();
+         System.exit(0);
+      }
+
+      Thread thread = new Thread(this);
+      thread.start();
+   }
+
+//   @Override
+//   public void actionPerformed(ActionEvent e) {
+//
+//   }
+
+   @Override
+   public void run() {
+      //받아오기
+      String[] command=null;
+      while (true) {
+         try {
+//            if (bufferedReader.ready()) {
+//               command = bufferedReader.readLine().split("\\|");
+//            }
+            command=bufferedReader.readLine().split("%");
+//            command = inputStream.readUTF().split("\\|");
+            System.out.println("member->frame"+command);
+            if (command == null){
+               bufferedReader.close();
+               printWriter.close();
+               socket.close();
+               System.exit(0);
+            }
+            else if (command[0].equals("successLogin")){
+               //로그인 성공시 정보 받아와서 Frame 생성
+               System.out.println("로그인 성공 다시 잘 받아오나?");
+               for (String s : command) {
+                  System.out.println("다시받아온 데이터 "+s);
+               }
+               if (command[1].equals("OKAY")){
+                  MainFrame mainFrame = new MainFrame(command[2]);
+                  frame.setVisible(false);
+                  mainFrame.setVisible(true);
+               }
+               else if (command[1].equals("FailId")){
+                  JOptionPane.showMessageDialog(null, "가입된 아이디가 아닙니다. 회원가입을 진행해주세요.");
+               }
+               else if (command[1].equals("FailPassword")){
+                  JOptionPane.showMessageDialog(null, "비밀번호가 일치하지 않습니다. 다시 확인해주세요.");
+               }
+            }
+         } catch (IOException io) {
+            System.out.println("정보받아오는데 동작안함");
+            io.printStackTrace();
+         }
+      }
+   }
 }

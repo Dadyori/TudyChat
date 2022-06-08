@@ -12,7 +12,7 @@ import javax.swing.JTable;
 import javax.swing.ImageIcon;
 
 public class StudyFrame extends JFrame{
-
+   String userId;
    /**
     * Launch the application.
     */
@@ -20,7 +20,7 @@ public class StudyFrame extends JFrame{
       EventQueue.invokeLater(new Runnable() {
          public void run() {
             try {
-            	StudyFrame window = new StudyFrame();
+            	StudyFrame window = new StudyFrame("dasol");
                window.setVisible(true);
             } catch (Exception e) {
                e.printStackTrace();
@@ -32,7 +32,8 @@ public class StudyFrame extends JFrame{
    /**
     * Create the application.
     */
-   public StudyFrame() {
+   public StudyFrame(String userId) {
+      this.userId = userId;
       initialize();
    }
 
@@ -60,12 +61,12 @@ public class StudyFrame extends JFrame{
       lblNewLabel.setFont(new Font("함초롬돋움", Font.PLAIN, 25));
       panel.add(lblNewLabel);
       
-      FriendFrame friendframe = new FriendFrame();
+      FriendFrame friendframe = new FriendFrame(userId);
       friendframe.setBounds(12, 50, 283, 603);
       panel.add(friendframe);
       friendframe.setVisible(true);
       
-      ChattingListFrame chatlist = new ChattingListFrame();
+      ChattingListFrame chatlist = new ChattingListFrame(userId);
       chatlist.setBounds(307, 50, 567, 603);
       panel.add(chatlist);
 

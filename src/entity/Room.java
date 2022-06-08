@@ -1,33 +1,31 @@
 package entity;
 
+import lombok.Getter;
+import lombok.Setter;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
 
+@Getter
+@Setter
 public class Room {
-    Vector<Member> member;
+    List<Member> member;
     String title;
     int roomId;
-    int count=0;
+    int count;
 
-    public Room(int roomId, String title, int count, Vector<Member> member) {
-        this.roomId = roomId;
+    public Room() {
+        this.roomId = 0;
+        this.title = "";
+        this.count = 0;
+        this.member = new ArrayList<>();
+    }
+
+    public Room(List<Member> member, String title, int roomId, int count) {
         this.member = member;
         this.title = title;
+        this.roomId = roomId;
         this.count = count;
-    }
-
-    public Vector<Member> getMember() {
-        return member;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public int getRoomId() {
-        return roomId;
-    }
-
-    public int getCount() {
-        return count;
     }
 }

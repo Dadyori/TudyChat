@@ -43,7 +43,7 @@ public class FriendController {
             System.out.println("친구목록 가져오기 실패");
             e.printStackTrace();
         }
-        System.out.println("친구 목록 가져오기 성공");
+        System.out.println("친구 목록 가져오기 성공 >> "+friends);
         return friends;
     }
 

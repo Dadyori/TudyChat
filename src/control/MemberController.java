@@ -116,6 +116,9 @@ public class MemberController {
         return true;
     }
 
+    /**
+     * 상태 확인
+     */
     public boolean checkStatus(String id) {
         String sql = "select is_connect from connect_state where user_id='"+id+"';";
         PreparedStatement pstmt = null;
@@ -130,5 +133,28 @@ public class MemberController {
             e.printStackTrace();
         }
         return isConnect;
+    }
+
+    /**
+     * 아이디, 이름, 상태 가져오기
+     */
+    public Map<String, String> getUserInfo(String id) {
+        String sql = "select user.user_id, user.user_name, connect_state.is_connect " +
+                "from user join connect_state on user.user_id=connect_state.user_id " +
+                "where user.user_id='"+"dasol';";
+        PreparedStatement pstmt = null;
+        Map<String, String> userInfo = new HashMap<>();
+        try {
+            pstmt=connection.prepareStatement(sql);
+            ResultSet resultSet = pstmt.executeQuery();
+            while (resultSet.next()){
+                userInfo.put("id", resultSet.getString("user_id"));
+                userInfo.put("name", resultSet.getString("user_name"));
+                userInfo.put("status", resultSet.getString("is_connect")); //1,0
+            }
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
+        return userInfo;
     }
 }

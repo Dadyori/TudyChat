@@ -1,29 +1,51 @@
 package boundary;
 
+import control.FriendController;
+import control.MemberController;
+
 import javax.swing.JPanel;
 import javax.swing.JList;
 import javax.swing.JLabel;
-import java.awt.Font;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
-import java.awt.Color;
+import java.util.*;
+import java.util.List;
 
 public class FriendFrame extends JPanel {
+
+	MemberController memberController;
+	FriendController friendController;
 
 	/**
 	 * Create the panel.
 	 */
-	public FriendFrame() {
+	public FriendFrame(String userId) {
+		memberController = new MemberController();
+		friendController = new FriendController();
+		Vector<String> fruits=new Vector<>(Arrays.asList("apple", "banana", "kiwi", "mango", "pear", "peach", "berry", "strawberry", "blackberry"));
 		setBounds(12, 50, 283, 502);
 		setLayout(null);
+
+		List<String> friends = friendController.getFriends(userId);
+		Vector<String> status = new Vector<>();
+		Vector<String> friendInfo = new Vector<>();
+		for (String friend : friends) {
+			Map<String, String> userInfo = memberController.getUserInfo(friend);
+			status.add(userInfo.get("status"));
+			String temp = userInfo.get("name")+" ("+userInfo.get("id")+")";
+			friendInfo.add(temp);
+		}
+		System.out.println("status"+status);
+		System.out.println("friendInfo"+friendInfo);
 		
-		JList friendStatusList = new JList();
+		JList friendStatusList = new JList(status);
 		friendStatusList.setBounds(12, 61, 49, 431);
 		add(friendStatusList);
-		
-		JList friendList = new JList();
+
+		JList friendList = new JList(friendInfo);
 		friendList.setBounds(73, 61, 198, 431);
 		add(friendList);
 		

@@ -1,5 +1,8 @@
 package boundary;
 
+import control.ChatRoomController;
+import control.MemberController;
+
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
@@ -22,7 +25,7 @@ public class MainFrame extends JFrame{
       EventQueue.invokeLater(new Runnable() {
          public void run() {
             try {
-               MainFrame window = new MainFrame();
+               MainFrame window = new MainFrame("test");
                window.setVisible(true);
             } catch (Exception e) {
                e.printStackTrace();
@@ -34,7 +37,8 @@ public class MainFrame extends JFrame{
    /**
     * Create the application.
     */
-   public MainFrame() {
+   public MainFrame(String userId) {
+      this.userId = userId;
       initialize();
    }
 
@@ -63,11 +67,11 @@ public class MainFrame extends JFrame{
       mainLabel.setFont(new Font("함초롬돋움", Font.PLAIN, 25));
       panel.add(mainLabel);
       
-      FriendFrame friendframe = new FriendFrame();
+      FriendFrame friendframe = new FriendFrame(userId);
       panel.add(friendframe);
       friendframe.setVisible(true);
       
-      ChattingListFrame chatlist = new ChattingListFrame();
+      ChattingListFrame chatlist = new ChattingListFrame(userId);
       chatlist.setBounds(307, 50, 567, 603);
       panel.add(chatlist);
       
@@ -75,8 +79,15 @@ public class MainFrame extends JFrame{
       recallButton.setBackground(new Color(245, 245, 220));
       recallButton.setForeground(new Color(0, 0, 255));
       recallButton.setFont(new Font("함초롬돋움", Font.PLAIN, 15));
-      recallButton.setBounds(769, 10, 105, 30);
+      recallButton.setBounds(655, 10, 105, 30);
       panel.add(recallButton);
+
+      JButton logoutBtn = new JButton("로그아웃");
+      logoutBtn.setBackground(new Color(245, 245, 220));
+      logoutBtn.setForeground(new Color(0, 0, 255));
+      logoutBtn.setFont(new Font("함초롬돋움", Font.PLAIN, 15));
+      logoutBtn.setBounds(769, 10, 105, 30);
+      panel.add(logoutBtn);
       
       JButton timerButton = new JButton("\uACF5\uBD80\uC2DC\uAC04\uCE21\uC815");
       timerButton.setForeground(new Color(0, 0, 255));
@@ -91,6 +102,7 @@ public class MainFrame extends JFrame{
     	  public void actionPerformed(ActionEvent e) {
     	  }
       });
+
       //공부시간측정버튼 동작 시
       timerButton.addActionListener(new ActionListener() {
     	  public void actionPerformed(ActionEvent e) {
@@ -98,14 +110,6 @@ public class MainFrame extends JFrame{
     		  timer.setVisible(true);*/
     	  }
       });
-   }
-
-   public void connect() {
-      try {
-         Socket socket = new Socket("localhost", 9999);
-      } catch (Exception e){
-         e.printStackTrace();
-      }
    }
    
 }
