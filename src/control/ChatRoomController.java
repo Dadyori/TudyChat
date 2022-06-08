@@ -1,10 +1,7 @@
 package control;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class ChatRoomController {
     MemberController memberController = new MemberController();
@@ -96,6 +93,27 @@ public class ChatRoomController {
         }
         return chatRoomList;
     }
+
+    /**
+     * 채팅방 아이디, 이름 목록 얻기
+     */
+    public Map<String,String> getRoomInfo(Integer roomId) {
+        String sql = "select id, chat_name from chat_room where id='"+roomId+"';";
+        Map<String, String> roomInfo = new HashMap<>();
+        PreparedStatement pstmt = null;
+        try {
+            pstmt=connection.prepareStatement(sql);
+            ResultSet resultSet = pstmt.executeQuery();
+            while (resultSet.next()){
+                roomInfo.put("roomId", resultSet.getString("id"));
+                roomInfo.put("title", resultSet.getString("chat_name"));
+            }
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
+        return roomInfo;
+    }
+
 
 
     /**

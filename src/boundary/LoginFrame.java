@@ -25,8 +25,9 @@ import java.awt.Window;
 import java.io.*;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.EventListener;
 
-public class LoginFrame extends JFrame implements Runnable{
+public class LoginFrame extends JFrame implements Runnable, ActionListener {
 
    private JFrame frame;
    private JTextField idTextField;
@@ -34,6 +35,7 @@ public class LoginFrame extends JFrame implements Runnable{
    private Socket socket;
    private BufferedReader bufferedReader;
    private PrintWriter printWriter;
+   ChattingFrame chattingFrame;
 
 //   OutputStream os;
 //   DataOutputStream dataOutputStream;
@@ -68,6 +70,7 @@ public class LoginFrame extends JFrame implements Runnable{
 
     public LoginFrame () {
        connect();
+       chattingFrame = new ChattingFrame();
 
        frame = new JFrame();
        frame.setLocationRelativeTo(null);
@@ -149,39 +152,12 @@ public class LoginFrame extends JFrame implements Runnable{
             }
             String userInfo=id+"%"+password;
             try {
-//               dataOutputStream.writeUTF("login\\|"+userInfo);
-//               System.out.println(dataOutputStream);
                printWriter.println("login%"+userInfo);
                printWriter.flush();
 
             } catch (Exception ioException) {
                ioException.printStackTrace();
             }
-//            printWriter.println("login\\|"+userInfo);
-//            printWriter.flush();
-
-//            String id = idTextField.getText();
-//            String password = pwTextField.getText();
-//            if(id.isBlank() || password.isBlank()){
-//               JOptionPane.showMessageDialog(null, "아이디/비밀번호를 모두 입력해주세요.");
-//            }
-//            int successLogin = memberController.login(id, password);
-//            if (successLogin == 1){
-//               JOptionPane.showMessageDialog(null, "로그인 되었습니다.");
-//               frame.dispose();	//LoginFrame 닫음
-//               connect();
-//               MainFrame main = new MainFrame();
-//               main.setVisible(true); //MainFrame 켬
-//            }
-//            else if (successLogin == 3){
-//               JOptionPane.showMessageDialog(null, "가입된 아이디가 아닙니다. 회원가입을 진행해주세요.");
-//            }
-//            else if (successLogin == 2){
-//               JOptionPane.showMessageDialog(null, "비밀번호가 일치하지 않습니다. 다시 확인해주세요.");
-//            }
-//            else {
-//               JOptionPane.showMessageDialog(null, "아이디와 비밀번호가 틀립니다");
-//            }
          }
       });
 
@@ -195,31 +171,26 @@ public class LoginFrame extends JFrame implements Runnable{
       });
    }
 
-   public void connect() {
-      try {
-         socket = new Socket("localhost", 9999);
-//         inputStream = new DataInputStream(this.socket.getInputStream());
-//         dataOutputStream = new DataOutputStream(this.socket.getOutputStream());
-         bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-         printWriter = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
-      } catch (UnknownHostException e){
-         System.out.println("서버를 찾을 수 없습니다");
-         e.printStackTrace();
-         System.exit(0);
-      } catch (IOException e) {
-         System.out.println("서버와 연결이 안되었습니다");
-         e.printStackTrace();
-         System.exit(0);
-      }
 
-      Thread thread = new Thread(this);
-      thread.start();
+   public void event() {
+       chattingFrame.sendButton.addActionListener(this);
    }
 
-//   @Override
-//   public void actionPerformed(ActionEvent e) {
-//
-//   }
+   @Override
+   public void actionPerformed(ActionEvent e) {
+       if (e.getSource() == chattingFrame.sendButton) {
+          String message = chattingFrame.sendTextfield.getText();
+          if (message.isBlank()) {
+             chattingFrame.sendTextfield.setText("");
+          }
+          try {
+             printWriter.println("send%"+message);
+             printWriter.flush();
+          } catch (Exception exception){
+             exception.printStackTrace();
+          }
+       }
+   }
 
    @Override
    public void run() {
@@ -227,9 +198,6 @@ public class LoginFrame extends JFrame implements Runnable{
       String[] command=null;
       while (true) {
          try {
-//            if (bufferedReader.ready()) {
-//               command = bufferedReader.readLine().split("\\|");
-//            }
             command=bufferedReader.readLine().split("%");
 //            command = inputStream.readUTF().split("\\|");
             System.out.println("member->frame"+command);
@@ -262,5 +230,26 @@ public class LoginFrame extends JFrame implements Runnable{
             io.printStackTrace();
          }
       }
+   }
+
+   public void connect() {
+      try {
+         socket = new Socket("localhost", 9999);
+//         inputStream = new DataInputStream(this.socket.getInputStream());
+//         dataOutputStream = new DataOutputStream(this.socket.getOutputStream());
+         bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+         printWriter = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
+      } catch (UnknownHostException e){
+         System.out.println("서버를 찾을 수 없습니다");
+         e.printStackTrace();
+         System.exit(0);
+      } catch (IOException e) {
+         System.out.println("서버와 연결이 안되었습니다");
+         e.printStackTrace();
+         System.exit(0);
+      }
+
+      Thread thread = new Thread(this);
+      thread.start();
    }
 }

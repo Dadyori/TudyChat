@@ -84,9 +84,6 @@ public class MainController extends Thread{
                         }
                     }
                 }
-                else if (command[0].compareTo("logout")==0){
-                }
-
             }
             bufferedReader.close();
             printWriter.close();

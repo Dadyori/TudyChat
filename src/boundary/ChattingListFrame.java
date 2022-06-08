@@ -1,5 +1,7 @@
 package boundary;
 
+import control.ChatRoomController;
+
 import javax.swing.JPanel;
 import javax.swing.JList;
 
@@ -7,12 +9,16 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
+import java.util.Map;
+import java.util.Vector;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
 
 public class ChattingListFrame extends JPanel {
 	String userId;
+	ChatRoomController chatRoomController = new ChatRoomController();
 
 	/**
 	 * Create the panel.
@@ -22,8 +28,16 @@ public class ChattingListFrame extends JPanel {
 		setBounds(35, 66, 589, 517);
 		setBounds(307, 50, 567, 603);
 		setLayout(null);
-		
-		JList chattingList = new JList();
+
+		Vector<String> roomInfoList = new Vector<>();
+		List<Integer> chatRoomList = chatRoomController.getChatRoomList(id);
+		for (Integer roomId : chatRoomList) {
+			Map<String, String> roomInfo = chatRoomController.getRoomInfo(roomId);
+			String temp = roomInfo.get("title")+" ("+roomInfo.get("roomId")+")";
+			roomInfoList.add(temp);
+		}
+
+		JList chattingList = new JList(roomInfoList);
 		chattingList.setBounds(29, 54, 511, 526);
 		add(chattingList);
 	      

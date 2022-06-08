@@ -25,7 +25,6 @@ public class FriendFrame extends JPanel {
 	public FriendFrame(String userId) {
 		memberController = new MemberController();
 		friendController = new FriendController();
-		Vector<String> fruits=new Vector<>(Arrays.asList("apple", "banana", "kiwi", "mango", "pear", "peach", "berry", "strawberry", "blackberry"));
 		setBounds(12, 50, 283, 502);
 		setLayout(null);
 

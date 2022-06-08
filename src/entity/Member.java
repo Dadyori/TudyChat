@@ -6,6 +6,7 @@ import lombok.Getter;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
@@ -87,12 +88,6 @@ public class Member extends Thread{
 
 //                    dataOutputStream.writeUTF("successLogin\\|"+successLogin);
                 }
-                else if (m[0].equals("signup")) {
-                    boolean signup = memberController.signup(m[1], m[2], m[3], m[4]);
-//                    dataOutputStream.writeUTF("successSignUp\\|"+signup);
-                    printWriter.println("successSignUp%"+signup);
-                    printWriter.flush();
-                }
                 else if (m[0].equals("idDuplicate")) {
                     boolean duplicate = memberController.checkDuplicate(m[1]);
 //                    dataOutputStream.writeUTF("isDuplicate\\|"+duplicate);
@@ -108,6 +103,13 @@ public class Member extends Thread{
 //                    waitMember.remove(this);
 //                    dataOutputStream.writeUTF("successMakeRoom\\|true");
                     System.out.println("[Server] "+name+" : 방 "+m[1]+" 생성 완료");
+                }
+                else if (m[0].equals("send")){
+                    List<Member> chatMember = myRoom.getMember();
+                    for (Member chatMem : chatMember) {
+                        chatMem.printWriter.println("send%"+this.getName()+"%"+m[1]);
+                        chatMem.printWriter.flush();
+                    }
                 }
             }
        } catch (IOException e) {

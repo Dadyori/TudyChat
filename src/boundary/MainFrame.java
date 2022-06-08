@@ -17,6 +17,9 @@ import javax.swing.JButton;
 
 public class MainFrame extends JFrame{
    private String userId;
+   MemberController memberController = new MemberController();
+   FriendFrame friendFrame;
+   ChattingListFrame chattingListFrame;
 
    /**
     * Launch the application.
@@ -66,14 +69,14 @@ public class MainFrame extends JFrame{
       mainLabel.setForeground(new Color(0, 0, 255));
       mainLabel.setFont(new Font("함초롬돋움", Font.PLAIN, 25));
       panel.add(mainLabel);
+
+      friendFrame = new FriendFrame(userId);
+      panel.add(friendFrame);
+      friendFrame.setVisible(true);
       
-      FriendFrame friendframe = new FriendFrame(userId);
-      panel.add(friendframe);
-      friendframe.setVisible(true);
-      
-      ChattingListFrame chatlist = new ChattingListFrame(userId);
-      chatlist.setBounds(307, 50, 567, 603);
-      panel.add(chatlist);
+      chattingListFrame = new ChattingListFrame(userId);
+      chattingListFrame.setBounds(307, 50, 567, 603);
+      panel.add(chattingListFrame);
       
       JButton recallButton = new JButton("\uC0C8\uB85C\uACE0\uCE68");
       recallButton.setBackground(new Color(245, 245, 220));
@@ -100,7 +103,26 @@ public class MainFrame extends JFrame{
       //새로고침 버튼 동작 시
       recallButton.addActionListener(new ActionListener() {
     	  public void actionPerformed(ActionEvent e) {
-    	  }
+             friendFrame.setVisible(false);
+             friendFrame = new FriendFrame(userId);
+             panel.add(friendFrame);
+             friendFrame.setVisible(true);
+
+             chattingListFrame.setVisible(false);
+             chattingListFrame = new ChattingListFrame(userId);
+             panel.add(chattingListFrame);
+             chattingListFrame.setVisible(true);
+          }
+      });
+
+      logoutBtn.addActionListener(new ActionListener() {
+         @Override
+         public void actionPerformed(ActionEvent e) {
+            memberController.logout(userId);
+            LoginFrame loginFrame = new LoginFrame();
+            loginFrame.setVisible(true);
+            setVisible(false);
+         }
       });
 
       //공부시간측정버튼 동작 시

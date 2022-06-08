@@ -12,12 +12,16 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 public class ChattingFrame extends JPanel {
-	private JTextField sendTextfield;
+	public JTextField sendTextfield;
+	public JButton sendButton;
+	public JList messageBlock;
+	private String userId;
 
 	/**
 	 * Create the panel.
 	 */
 	public ChattingFrame() {
+		this.userId = userId;
 		setBounds(35, 66, 589, 517);
 		setBounds(307, 50, 567, 603);
 		setBackground(new Color(245, 245, 220));
@@ -34,11 +38,11 @@ public class ChattingFrame extends JPanel {
 	    add(sendTextfield);
 	    sendTextfield.setColumns(10);
 	    
-	    JButton sendButton = new JButton("전송");
+	    sendButton = new JButton("전송");
 	    sendButton.setBounds(470, 564, 97, 29);
 	    add(sendButton);
 		
-		JList messageBlock = new JList();
+		messageBlock = new JList();
 		messageBlock.setBackground(new Color(204, 255, 255));
 		messageBlock.setBounds(0, 50, 567, 511);
 		add(messageBlock);
