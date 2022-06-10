@@ -6,16 +6,14 @@ import lombok.Getter;
 
 import java.io.*;
 import java.net.Socket;
-import java.util.List;
-import java.util.Map;
-import java.util.Vector;
+import java.util.*;
 
 public class Member extends Thread{
     Server server;
     Socket socket;
 
-    Vector<Member> allMember;
-    Vector<Member> friendMember;
+//    Vector<Member> allMember;
+//    Vector<Member> friendMember;
     Vector<Room> roomList;
 
 //    OutputStream outputStream;
@@ -25,7 +23,6 @@ public class Member extends Thread{
     BufferedReader bufferedReader;
     PrintWriter printWriter;
 
-
     String message;
     String id;
     String name;
@@ -33,18 +30,16 @@ public class Member extends Thread{
     Room myRoom;
 
     MemberController memberController = new MemberController();
-    FriendController friendController = new FriendController();
-    TodoController todoController = new TodoController();
-    TimerController timerController = new TimerController();
     ChatRoomController chatRoomController = new ChatRoomController();
 
     public Member (Socket socket, Server server) throws IOException{
         this.socket=socket;
         this.server=server;
 
-        allMember=server.allUserList;
+//        allMember=server.allUserList;
 //        waitMember=server.waitUserList;
         roomList = server.roomList;
+        myRoom = new Room();
         bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         printWriter = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
     }
@@ -59,22 +54,19 @@ public class Member extends Thread{
 //            dataInputStream=new DataInputStream(inputStream);
 
             while (true) {
-//                message = dataInputStream.readUTF(); //메시지 수신 상시 대기
                 message=bufferedReader.readLine();
+                System.out.println("받아오는 메시지" + message);
                 String[] m = message.split("%"); //메시지 나누어 저장
-                System.out.println("frame->member"+m);
-                System.out.println(m[0]);
                 if(m[0].equals("login")) {
-                    System.out.println("member에서 로그인 진입");
                     int successLogin = memberController.login(m[1], m[2]);
                     if (successLogin == 1) {
                         Map<String, String> userInfo = memberController.getUserInfo(m[1]);
                         name=userInfo.get("name");
                         id=userInfo.get("id");
                         status=Integer.parseInt(userInfo.get("status"));
-                        allMember.add(this);
+//                        allMember.add(this);
 //                        waitMember.add(this);
-                        printWriter.println("successLogin%OKAY%"+id);
+                        printWriter.println("successLogin%OKAY%"+m[1]);
                         printWriter.flush();
                     }
                     else if (successLogin == 2) {
@@ -88,27 +80,67 @@ public class Member extends Thread{
 
 //                    dataOutputStream.writeUTF("successLogin\\|"+successLogin);
                 }
-                else if (m[0].equals("idDuplicate")) {
-                    boolean duplicate = memberController.checkDuplicate(m[1]);
-//                    dataOutputStream.writeUTF("isDuplicate\\|"+duplicate);
-                    printWriter.println("isDuplicate%"+duplicate);
-                    printWriter.flush();
+                else if (m[0].equals("getChatRoomList")){
+                    List<Integer> chatRoomList = chatRoomController.getChatRoomList(m[1]);
+                    for (Integer chatId : chatRoomList) {
+                        Room room = new Room();
+                        Map<String, String> roomInfo = chatRoomController.getRoomInfo(chatId);
+                        room.roomId=Integer.parseInt(roomInfo.get("roomId"));
+                        room.title=roomInfo.get("title");
+                        roomList.add(room);
+                    }
                 }
-                else if (m[0].equals("makeRoom")) {
-                    myRoom = new Room();
-                    myRoom.title = m[1];
+                else if (m[0].equals("makeChatRoom")){
+                    myRoom = new Room(Integer.parseInt(m[1]), m[2]);
+                    myRoom.roomId=Integer.parseInt(m[1]);
+                    myRoom.title=m[2];
                     myRoom.count++;
                     roomList.add(myRoom);
                     myRoom.member.add(this);
-//                    waitMember.remove(this);
-//                    dataOutputStream.writeUTF("successMakeRoom\\|true");
-                    System.out.println("[Server] "+name+" : 방 "+m[1]+" 생성 완료");
+                    System.out.println("성공적으로 방 생성");
+                    printWriter.println("successMakeRoom%OKAY");
+                    printWriter.flush();
+                }
+                else if (m[0].equals("enterChatRoom")) {
+                    for (int i=0;i<roomList.size();i++) {
+                        Room r = roomList.get(i);
+                        if (r.roomId == Integer.parseInt(m[1])){
+                            r.member.add(this);
+                            myRoom = r;
+                            System.out.println("성공적으로 방 입장");
+                            printWriter.println("successEnterRoom%"+this.id+"%"+this.myRoom.roomId);
+                            printWriter.flush();
+                            break;
+                        }
+                    }
                 }
                 else if (m[0].equals("send")){
-                    List<Member> chatMember = myRoom.getMember();
-                    for (Member chatMem : chatMember) {
-                        chatMem.printWriter.println("send%"+this.getName()+"%"+m[1]);
-                        chatMem.printWriter.flush();
+                    System.out.println("두 개 나오나? "+roomList);
+                    List<Member> chatMember = myRoom.member;
+                    Set<Member> set = new HashSet<>(chatMember);
+                    if (! set.isEmpty()) {
+                        for (Member chatMem : set) {
+                            if (chatMem.myRoom.equals(this.myRoom)){
+                                System.out.println("채팅방 참여 멤버 "+chatMem.name);
+                                String sendMsg = "sendToChat%"+this.name+"%"+m[2];
+                                System.out.println("보낼 메시지 "+sendMsg);
+                                chatMem.printWriter.println(sendMsg);
+                                chatMem.printWriter.flush();
+                            }
+                        }
+                    }
+                }
+                else if (m[0].equals("shareTime")) {
+                    for (int i=0;i<roomList.size();i++) {
+                        Room r = roomList.get(i);
+                        if (r.roomId == Integer.parseInt(m[1])){
+                            r.member.add(this);
+                            myRoom = r;
+                            System.out.println("공유할 방 member 입장 완료 >> "+this.name+" 시간 >> "+m[3]);
+                            printWriter.println("successShareTime%"+m[1]+"%"+m[2]+"%"+this.name+"%"+m[3]);
+                            printWriter.flush();
+                            break;
+                        }
                     }
                 }
             }

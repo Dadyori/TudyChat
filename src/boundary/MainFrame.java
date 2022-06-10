@@ -12,11 +12,15 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.Color;
+import java.io.BufferedReader;
+import java.io.PrintWriter;
 import java.net.Socket;
 import javax.swing.JButton;
 
 public class MainFrame extends JFrame{
-   private String userId;
+   String userId;
+   BufferedReader bufferedReader;
+   PrintWriter printWriter;
    MemberController memberController = new MemberController();
    FriendFrame friendFrame;
    ChattingListFrame chattingListFrame;
@@ -24,24 +28,26 @@ public class MainFrame extends JFrame{
    /**
     * Launch the application.
     */
-   public static void main(String[] args) {
-      EventQueue.invokeLater(new Runnable() {
-         public void run() {
-            try {
-               MainFrame window = new MainFrame("test");
-               window.setVisible(true);
-            } catch (Exception e) {
-               e.printStackTrace();
-            }
-         }
-      });
-   }
+//   public static void main(String[] args) {
+//      EventQueue.invokeLater(new Runnable() {
+//         public void run() {
+//            try {
+//               MainFrame window = new MainFrame("test");
+//               window.setVisible(true);
+//            } catch (Exception e) {
+//               e.printStackTrace();
+//            }
+//         }
+//      });
+//   }
 
    /**
     * Create the application.
     */
-   public MainFrame(String userId) {
+   public MainFrame(String userId, BufferedReader br, PrintWriter pw) {
       this.userId = userId;
+      this.bufferedReader = br;
+      this.printWriter = pw;
       initialize();
    }
 
@@ -53,6 +59,7 @@ public class MainFrame extends JFrame{
       this.setForeground(new Color(240, 230, 140));
       this.getContentPane().setForeground(new Color(255, 255, 255));
       this.setSize(900, 700);
+      this.setResizable(false);
       this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
       this.getContentPane().setLayout(null);
       
@@ -74,7 +81,7 @@ public class MainFrame extends JFrame{
       panel.add(friendFrame);
       friendFrame.setVisible(true);
       
-      chattingListFrame = new ChattingListFrame(userId);
+      chattingListFrame = new ChattingListFrame(userId, bufferedReader, printWriter);
       chattingListFrame.setBounds(307, 50, 567, 603);
       panel.add(chattingListFrame);
       
@@ -109,12 +116,13 @@ public class MainFrame extends JFrame{
              friendFrame.setVisible(true);
 
              chattingListFrame.setVisible(false);
-             chattingListFrame = new ChattingListFrame(userId);
+             chattingListFrame = new ChattingListFrame(userId, bufferedReader, printWriter);
              panel.add(chattingListFrame);
              chattingListFrame.setVisible(true);
           }
       });
 
+      //로그아웃 버튼 동작시
       logoutBtn.addActionListener(new ActionListener() {
          @Override
          public void actionPerformed(ActionEvent e) {
@@ -128,8 +136,8 @@ public class MainFrame extends JFrame{
       //공부시간측정버튼 동작 시
       timerButton.addActionListener(new ActionListener() {
     	  public void actionPerformed(ActionEvent e) {
-    		  /*TimerFrame timer = new TimerFrame();
-    		  timer.setVisible(true);*/
+    		  TimerFrame timer = new TimerFrame(userId, bufferedReader, printWriter);
+    		  timer.setVisible(true);
     	  }
       });
    }

@@ -1,5 +1,7 @@
 package boundary;
 
+import control.TodoController;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.EventQueue;
@@ -19,28 +21,36 @@ public class ChangeTodoFrame extends JFrame {
 
 	private JPanel contentPane;
 	private JTextField titleTextField;
+	Integer todoId;
+	Integer chatId;
+
+	TodoController todoController;
+
 	/**
 	 * Launch the application.
 	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					ChangeTodoFrame frame = new ChangeTodoFrame();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
+//	public static void main(String[] args) {
+//		EventQueue.invokeLater(new Runnable() {
+//			public void run() {
+//				try {
+//					ChangeTodoFrame frame = new ChangeTodoFrame();
+//					frame.setVisible(true);
+//				} catch (Exception e) {
+//					e.printStackTrace();
+//				}
+//			}
+//		});
+//	}
 
 	/**
 	 * Create the frame.
 	 */
-	public ChangeTodoFrame() {
+	public ChangeTodoFrame(Integer chatId, Integer todoId) {
+		this.chatId = chatId;
+		this.todoId = todoId;
+		todoController = new TodoController();
 	    setBounds(100, 100, 319, 170);
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -73,21 +83,24 @@ public class ChangeTodoFrame extends JFrame {
 	    changeButton.setFont(new Font("함초롬돋움", Font.PLAIN, 16));
 	    changeButton.setBounds(208, 87, 91, 33);
 	    panel.add(changeButton);
+	    setResizable(false);
 		
 	    changeButton.addActionListener(new ActionListener() {
 	    	public void actionPerformed(ActionEvent e) {
-	    		//수정할 이름을 입력하지 않고 수정 버튼을 누르는 경우
-	    		if(titleTextField.getText().isBlank()) {
-	    			  dispose();
-	    		  }
-	    		//이미 있는 리스트와 같은 이름의 리스트로 수정한다.
-	    		/*else if() {
-	    			JOptionPane.showMessageDialog(null, "할 일 목록에 이미 존재하는 항목입니다");
-	    		}*/
+				String changeTitle = titleTextField.getText();
+				//수정할 이름을 입력하지 않고 수정 버튼을 누르는 경우
+	    		if (changeTitle.isBlank()) {
+					JOptionPane.showMessageDialog(null, "변경 내용을 입력해주세요");
+					dispose();
+	    		}
+	    		else if (todoController.checkTodoDuplicate(chatId, changeTitle)) {
+					JOptionPane.showMessageDialog(null, "할 일 목록에 이미 존재하는 항목입니다");
+				}
 	    		else {
-	    			//String todoTitle=titleTextField.getText();
-		    		//changeTodo(todoId, todoTitle);
-	    			dispose();
+					Boolean successChange = todoController.changeTodo(chatId, todoId, changeTitle);
+					if (successChange){
+						dispose();
+					}
 	    		}
 
 	    	}

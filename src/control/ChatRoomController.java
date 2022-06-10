@@ -1,6 +1,7 @@
 package control;
 
 import java.sql.*;
+import java.time.LocalDateTime;
 import java.util.*;
 
 public class ChatRoomController {
@@ -22,10 +23,27 @@ public class ChatRoomController {
         }
     }
 
+    public Boolean titleDuplicate(String title) {
+        String sql = "select EXISTS (select chat_name from chat_room where chat_name='"+title+"' limit 1) as success;";
+        PreparedStatement pstmt = null;
+        boolean success=false;
+        try {
+            pstmt=connection.prepareStatement(sql);
+            ResultSet resultSet = pstmt.executeQuery();
+            while (resultSet.next()){
+                success = resultSet.getBoolean("success");
+            }
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
+        return success;
+    }
+
     /**
      * 채팅방 생성
      */
-    public Boolean addChatRoom(String chatTitle, List<String> members){
+    public Integer addChatRoom(String chatTitle, List<String> members){
+        if (titleDuplicate(chatTitle)) return 2;
         String sql = "insert into chat_room (chat_name, chat_num) values(?, ?);";
         PreparedStatement pstmt = null;
         try{
@@ -34,12 +52,35 @@ public class ChatRoomController {
             pstmt.setInt(2, members.size());
             pstmt.executeUpdate();
             System.out.println("채팅방 추가 성공");
-            if (addChatMember(chatTitle, members)) return true;
+            if (addChatMember(chatTitle, members)) return 1;
         } catch (SQLException e){
+            e.printStackTrace();
+        }
+        return 3;
+    }
+
+    /**
+     * 메시지 보내기
+     */
+    public Boolean sendMessage(Integer chatId, String userId, String message) {
+        LocalDateTime now = LocalDateTime.now();
+        System.out.println(now);
+        String sql = "insert into message (room_id, user_id, message) values(?, ?, ?);";
+        PreparedStatement pstmt = null;
+        try {
+            pstmt = connection.prepareStatement(sql);
+            pstmt.setInt(1, chatId);
+            pstmt.setString(2, userId);
+            pstmt.setString(3, message);
+            pstmt.executeUpdate();
+            System.out.println("메시지 전송 성공");
+            return true;
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         return false;
     }
+
 
     /**
      * 채팅방에 멤버 추가
@@ -95,9 +136,28 @@ public class ChatRoomController {
     }
 
     /**
+     * 채팅방 이름으로 아이디 얻기
+     */
+    public Integer getRoomId (String title) {
+        String sql = "select id from chat_room where chat_name='"+title+"';";
+        PreparedStatement pstmt = null;
+        Integer result=null;
+        try {
+            pstmt = connection.prepareStatement(sql);
+            ResultSet resultSet = pstmt.executeQuery();
+            while (resultSet.next()) {
+                result=resultSet.getInt("id");
+            }
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+    /**
      * 채팅방 아이디, 이름 목록 얻기
      */
-    public Map<String,String> getRoomInfo(Integer roomId) {
+    public Map<String, String> getRoomInfo(Integer roomId) {
         String sql = "select id, chat_name from chat_room where id='"+roomId+"';";
         Map<String, String> roomInfo = new HashMap<>();
         PreparedStatement pstmt = null;
@@ -139,16 +199,20 @@ public class ChatRoomController {
     /**
      * 기존 메시지 가져오기
      */
-    public LinkedHashMap<String, String> getChatMessage(Integer chatId) {
+    public List<String> getChatMessage(Integer chatId) {
         String sql = "select user.user_name, message.message from message join user on message.user_id=user.user_id" +
                 " where message.room_id ="+chatId+" order by createdAt;";
-        LinkedHashMap<String, String> messages = new LinkedHashMap<>();
+        List<String> messages = new ArrayList<>();
         PreparedStatement pstmt = null;
         try {
             pstmt = connection.prepareStatement(sql);
             ResultSet resultSet = pstmt.executeQuery();
             while (resultSet.next()) {
-                messages.put(resultSet.getString("user_name"), resultSet.getString("message"));
+                String messageInfo="";
+                messageInfo=messageInfo+resultSet.getString("user_name");
+                messageInfo=messageInfo+" >> ";
+                messageInfo=messageInfo+resultSet.getString("message");
+                messages.add(messageInfo);
             }
         } catch (SQLException e){
             e.printStackTrace();

@@ -30,20 +30,25 @@ public class FriendController {
      * 친구목록 가져오기
      */
     public List<String> getFriends(String id){
-        String sql = "select friend_id from friend where user_id='"+id+"' or friend_id='"+id+"';";
+        String sql = "select user_id, friend_id from friend " +
+                "where user_id='"+id+"' or friend_id='"+id+"';";
         PreparedStatement pstmt = null;
         ArrayList<String> friends = new ArrayList<>();
         try {
             pstmt = connection.prepareStatement(sql);
             ResultSet resultSet = pstmt.executeQuery();
             while (resultSet.next()){
-                friends.add(resultSet.getString("friend_id"));
+                String sqlUser = resultSet.getString("user_id");
+                if (sqlUser.equals(id)) {
+                    friends.add(resultSet.getString("friend_id"));
+                }
+                else friends.add(sqlUser);
             }
         }catch (SQLException e){
             System.out.println("친구목록 가져오기 실패");
             e.printStackTrace();
         }
-        System.out.println("친구 목록 가져오기 성공 >> "+friends);
+        System.out.println(id+"친구 목록 가져오기 성공 : "+friends);
         return friends;
     }
 
@@ -55,6 +60,7 @@ public class FriendController {
         String sql = "insert into friend (user_id, friend_id) values(?, ?);";
         PreparedStatement pstmt = null;
         try {
+            if (friendId.equals(userId)) return 4;
             if (checkFriendDuplicate(userId, friendId)) {
                 System.out.println("이미 등록된 친구");
                 return 2;

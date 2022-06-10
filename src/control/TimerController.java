@@ -2,6 +2,9 @@ package control;
 
 import java.sql.*;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,10 +28,12 @@ public class TimerController {
     }
 
     /**
-     * 저장된 시간 불러오기 (한달)
+     * 저장된 시간 불러오기 (3주)
      */
     public Map<String, String> getStudyTimeForMonth(String id){
-        String sql="select * from study_time where (today between DATE_ADD(NOW(),INTERVAL -1 MONTH ) AND NOW() and user_id='"+id+"') order by today;";
+        String sql = "select today, study_time from study_time " +
+                "where (today between date_add(now(), interval -20 day) and now() " +
+                "and user_id='"+id+"') order by today;";
         PreparedStatement pstmt = null;
         Map<String, String> result = new HashMap<>();
         try{
@@ -48,21 +53,57 @@ public class TimerController {
      * 시간 저장
      */
     public Boolean setStudyTime(String id, String today, String studyTime) throws SQLException {
-        String sql = "insert into study_time (user_id, today, study_time) values(?, ?, ?);";
+        String sql2 = "select study_time from study_time where user_id='"+id+"' and today='"+today+"';";
         PreparedStatement pstmt = null;
-        try{
+        String sql;
+        String time = null;
+        try {
+            pstmt = connection.prepareStatement(sql2);
+            ResultSet resultSet = pstmt.executeQuery();
+            while (resultSet.next()) {
+                time = resultSet.getString("study_time");
+            }
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
+        if (time!=null) {
+            String[] timeSplit = time.split(":");
+            String[] addTime = studyTime.split(":");
+            List<String> result = new ArrayList<>();
+            for (int i = 0; i < 3; i++) {
+                int temp = Integer.parseInt(timeSplit[i]) + Integer.parseInt(addTime[i]);
+                if (temp >= 60 && i != 0) {
+                    temp -= 60;
+                    int t2 = Integer.parseInt(result.get(i - 1)) + 1;
+                    result.set(i - 1, String.valueOf(t2));
+                }
+                result.add(String.valueOf(temp));
+            }
+            String timeResult = result.get(0) + ":" + result.get(1) + ":" + result.get(2);
+            try {
+                if (time != null) {
+                    sql = "update study_time set study_time='" + timeResult +
+                            "' where user_id='" + id + "' and today='" + today + "';";
+                    pstmt = connection.prepareStatement(sql);
+                    pstmt.executeUpdate();
+                    System.out.println("공부시간 추가 성공");
+                    return true;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        else {
+            sql = "insert into study_time (user_id, today, study_time) values(?, ?, ?);";
             pstmt=connection.prepareStatement(sql);
             pstmt.setString(1, id);
             pstmt.setString(2, today);
-            pstmt.setString(3,studyTime);
+            pstmt.setString(3, studyTime);
             pstmt.executeUpdate();
             System.out.println("공부시간 추가 성공!");
             return true;
-        } catch (Exception e){
-            System.out.println("공부시간 추가 실패..");
-            e.printStackTrace();
-            return false;
         }
+        return false;
     }
 
     /**

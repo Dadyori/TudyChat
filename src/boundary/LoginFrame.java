@@ -27,7 +27,7 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.EventListener;
 
-public class LoginFrame extends JFrame implements Runnable, ActionListener {
+public class LoginFrame extends JFrame implements Runnable {
 
    private JFrame frame;
    private JTextField idTextField;
@@ -35,8 +35,7 @@ public class LoginFrame extends JFrame implements Runnable, ActionListener {
    private Socket socket;
    private BufferedReader bufferedReader;
    private PrintWriter printWriter;
-   ChattingFrame chattingFrame;
-
+   StudyFrame studyFrame;
 //   OutputStream os;
 //   DataOutputStream dataOutputStream;
 //   InputStream is;
@@ -70,7 +69,6 @@ public class LoginFrame extends JFrame implements Runnable, ActionListener {
 
     public LoginFrame () {
        connect();
-       chattingFrame = new ChattingFrame();
 
        frame = new JFrame();
        frame.setLocationRelativeTo(null);
@@ -151,6 +149,7 @@ public class LoginFrame extends JFrame implements Runnable, ActionListener {
                JOptionPane.showMessageDialog(null, "아이디/비밀번호를 모두 입력해주세요.");
             }
             String userInfo=id+"%"+password;
+            System.out.println("보내는 데이터 >> "+userInfo);
             try {
                printWriter.println("login%"+userInfo);
                printWriter.flush();
@@ -161,7 +160,6 @@ public class LoginFrame extends JFrame implements Runnable, ActionListener {
          }
       });
 
-
       //회원가입 버튼 동작시
       signUpButton.addActionListener(new ActionListener() {
     	  public void actionPerformed(ActionEvent e) {
@@ -169,38 +167,48 @@ public class LoginFrame extends JFrame implements Runnable, ActionListener {
     		  sign.setVisible(true);
     	  }
       });
+
+//      event();
    }
 
-
-   public void event() {
-       chattingFrame.sendButton.addActionListener(this);
-   }
-
-   @Override
-   public void actionPerformed(ActionEvent e) {
-       if (e.getSource() == chattingFrame.sendButton) {
-          String message = chattingFrame.sendTextfield.getText();
-          if (message.isBlank()) {
-             chattingFrame.sendTextfield.setText("");
-          }
-          try {
-             printWriter.println("send%"+message);
-             printWriter.flush();
-          } catch (Exception exception){
-             exception.printStackTrace();
-          }
-       }
-   }
+//
+//   public void event() {
+//      ChattingListFrame chatListFrame = mainFrame.chattingListFrame;
+//      chatListFrame.enterBtn.addActionListener(this);
+//      studyFrame.chattingFrame.sendButton.addActionListener(this);
+//   }
+//
+//   @Override
+//   public void actionPerformed(ActionEvent e) {
+//      ChattingListFrame chatListFrame = mainFrame.chattingListFrame;
+//      ChattingFrame chattingFrame = studyFrame.chattingFrame;
+//      if (e.getSource() == chattingFrame.sendButton) {
+//          String message = chattingFrame.sendTextfield.getText();
+//          if (message.isBlank()) {
+//             chattingFrame.sendTextfield.setText("");
+//          }
+//          try {
+//             printWriter.println("send%"+message);
+//             printWriter.flush();
+//          } catch (Exception exception){
+//             exception.printStackTrace();
+//          }
+//       }
+//       else if (e.getSource() == mainFrame.chattingListFrame.enterBtn) {
+//          int selectedIndex = mainFrame.chattingListFrame.chattingList.getSelectedIndex();
+//          StudyFrame studyFrame = new StudyFrame(mainFrame.userId, mainFrame.chattingListFrame.chatIdList.get(selectedIndex), bufferedReader, printWriter);
+//          studyFrame.setVisible(true);
+//       }
+//   }
 
    @Override
    public void run() {
       //받아오기
-      String[] command=null;
       while (true) {
          try {
-            command=bufferedReader.readLine().split("%");
-//            command = inputStream.readUTF().split("\\|");
-            System.out.println("member->frame"+command);
+            String message = bufferedReader.readLine();
+            String[] command=message.split("%");
+            System.out.println("member->frame"+message);
             if (command == null){
                bufferedReader.close();
                printWriter.close();
@@ -209,12 +217,11 @@ public class LoginFrame extends JFrame implements Runnable, ActionListener {
             }
             else if (command[0].equals("successLogin")){
                //로그인 성공시 정보 받아와서 Frame 생성
-               System.out.println("로그인 성공 다시 잘 받아오나?");
                for (String s : command) {
                   System.out.println("다시받아온 데이터 "+s);
                }
                if (command[1].equals("OKAY")){
-                  MainFrame mainFrame = new MainFrame(command[2]);
+                  MainFrame mainFrame = new MainFrame(command[2], bufferedReader, printWriter);
                   frame.setVisible(false);
                   mainFrame.setVisible(true);
                }
@@ -224,6 +231,21 @@ public class LoginFrame extends JFrame implements Runnable, ActionListener {
                else if (command[1].equals("FailPassword")){
                   JOptionPane.showMessageDialog(null, "비밀번호가 일치하지 않습니다. 다시 확인해주세요.");
                }
+            }
+            else if (command[0].equals("successEnterRoom")){
+               System.out.println("방 입장 성공 >> id : "+ command[1]+" 방 아이디 : "+command[2]);
+               studyFrame = new StudyFrame(command[1], Integer.parseInt(command[2]), bufferedReader, printWriter);
+               studyFrame.setVisible(true);
+            }
+            else if (command[0].equals("sendToChat")) {
+               String sendMsg = command[1]+" >> "+command[2];
+               studyFrame.chattingFrame.messageBlock.append(sendMsg+"\n");
+            }
+            else if (command[0].equals("successShareTime")) {
+               studyFrame = new StudyFrame(command[2], Integer.parseInt(command[1]), bufferedReader, printWriter);
+               String shareTimeMsg = command[3]+"님의 오늘 공부 시간은 "+command[4]+"입니다!\n";
+               printWriter.println("send%"+command[1]+"%"+shareTimeMsg);
+               printWriter.flush();
             }
          } catch (IOException io) {
             System.out.println("정보받아오는데 동작안함");

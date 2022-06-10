@@ -45,7 +45,7 @@ public class AddTodoFrame extends JFrame {
 	public AddTodoFrame(int id) {
 		this.chatId=id;
 	    setBounds(100, 100, 319, 170);
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);

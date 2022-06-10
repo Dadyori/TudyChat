@@ -15,7 +15,7 @@ import java.util.*;
 import java.util.List;
 
 public class FriendFrame extends JPanel {
-
+	String userId;
 	MemberController memberController;
 	FriendController friendController;
 
@@ -23,12 +23,14 @@ public class FriendFrame extends JPanel {
 	 * Create the panel.
 	 */
 	public FriendFrame(String userId) {
+		this.userId=userId;
 		memberController = new MemberController();
 		friendController = new FriendController();
 		setBounds(12, 50, 283, 502);
 		setLayout(null);
 
 		List<String> friends = friendController.getFriends(userId);
+		System.out.println("받아온 친구 : "+friends);
 		Vector<String> status = new Vector<>();
 		Vector<String> friendInfo = new Vector<>();
 		for (String friend : friends) {
@@ -37,8 +39,8 @@ public class FriendFrame extends JPanel {
 			String temp = userInfo.get("name")+" ("+userInfo.get("id")+")";
 			friendInfo.add(temp);
 		}
-		System.out.println("status"+status);
-		System.out.println("friendInfo"+friendInfo);
+		System.out.println("status : "+status);
+		System.out.println("friendInfo : "+friendInfo);
 		
 		JList friendStatusList = new JList(status);
 		friendStatusList.setBounds(12, 61, 49, 431);
@@ -63,7 +65,7 @@ public class FriendFrame extends JPanel {
 	      
 	      addFriendButton.addActionListener(new ActionListener() {
 	    	  public void actionPerformed(ActionEvent e) {
-	    		  AddFriendFrame add = new AddFriendFrame();
+	    		  AddFriendFrame add = new AddFriendFrame(userId);
 	    		  add.setVisible(true);
 	    	  }
 	      });

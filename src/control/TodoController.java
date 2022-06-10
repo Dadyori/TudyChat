@@ -24,6 +24,26 @@ public class TodoController {
     }
 
     /**
+     * 할 일 이름으로 아이디 얻기
+     */
+    public Integer getTodoId (Integer chatId, String title) {
+        String sql = "select todo_id from todo where chat_id='"+chatId+"' and title='"+title+"';";
+        PreparedStatement pstmt = null;
+        Integer result=null;
+        try {
+            pstmt = connection.prepareStatement(sql);
+            ResultSet resultSet = pstmt.executeQuery();
+            while (resultSet.next()) {
+                result=resultSet.getInt("todo_id");
+            }
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+
+    /**
      * 할 일 목록 가져오기
      */
     public Map<Integer, String> getTodoList(Integer chatId) {
@@ -58,6 +78,24 @@ public class TodoController {
             pstmt.setString(2, todoTitle);
             pstmt.executeUpdate();
             System.out.println("할 일 추가 성공");
+            return true;
+        } catch (SQLException e){
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    /**
+     * 할 일 수정
+     */
+    public Boolean changeTodo(Integer chatId, Integer todoId, String title) {
+        String sql = "update todo set title='"+title
+                +"' where chat_id="+chatId+" and todo_Id="+todoId+";";
+        PreparedStatement pstmt = null;
+        try {
+            pstmt = connection.prepareStatement(sql);
+            pstmt.executeUpdate();
+            System.out.println("할 일 수정 성공");
             return true;
         } catch (SQLException e){
             e.printStackTrace();

@@ -141,7 +141,7 @@ public class MemberController {
     public Map<String, String> getUserInfo(String id) {
         String sql = "select user.user_id, user.user_name, connect_state.is_connect " +
                 "from user join connect_state on user.user_id=connect_state.user_id " +
-                "where user.user_id='"+"dasol';";
+                "where user.user_id='"+id+"';";
         PreparedStatement pstmt = null;
         Map<String, String> userInfo = new HashMap<>();
         try {
