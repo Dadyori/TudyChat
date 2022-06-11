@@ -34,22 +34,24 @@ public class TimerController {
     /**
      * 저장된 시간 불러오기 (3주)
      */
-    public Map<String, String> getStudyTimeForMonth(String id){
+    public List<Map<String, String>> getStudyTimeForMonth(String id){
         String sql = "select today, study_time from study_time " +
                 "where (today between date_add(now(), interval -20 day) and now() " +
                 "and user_id='"+id+"') order by today;";
         PreparedStatement pstmt = null;
         Map<String, String> result = new HashMap<>();
+        List<Map<String, String>> resultList = new ArrayList<>();
         try{
             pstmt=connection.prepareStatement(sql);
             ResultSet resultSet = pstmt.executeQuery();
             while (resultSet.next()) {
                 result.put(resultSet.getString("today"), resultSet.getString("study_time"));
+                resultList.add(result);
             }
         } catch (SQLException e){
             e.printStackTrace();
         }
-        return result;
+        return resultList;
     }
 
 

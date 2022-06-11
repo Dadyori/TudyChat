@@ -22,6 +22,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 public class TimeGraphFrame {
@@ -43,7 +44,7 @@ public class TimeGraphFrame {
 //    }
 
     public JFreeChart getChart() {
-        Map<String, String> studyTimeForMonth = timerController.getStudyTimeForMonth(userId);
+        List<Map<String, String>> studyTimeForMonth = timerController.getStudyTimeForMonth(userId);
 
         // 데이터 생성
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
