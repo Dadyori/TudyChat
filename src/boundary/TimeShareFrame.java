@@ -61,7 +61,7 @@ public class TimeShareFrame extends JFrame {
 
         JPanel shareChatListPanel = new JPanel();
         shareChatListPanel.setBounds(12, 47, 230,407);
-        shareChatListPanel.setLayout(new BorderLayout());
+        shareChatListPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
         checkBoxes = new ArrayList<>();
         List<Integer> chatRoomList = chatRoomController.getChatRoomList(userId);
         List<String> titleList = new ArrayList<>();
@@ -72,14 +72,9 @@ public class TimeShareFrame extends JFrame {
         for (String chatTitle : titleList) {
             JCheckBox checkBox = new JCheckBox(chatTitle);
             checkBoxes.add(checkBox);
-            shareChatListPanel.add(checkBox, BorderLayout.NORTH);
+            shareChatListPanel.add(checkBox);
         }
         contentPane.add(shareChatListPanel);
-
-        JScrollPane scrollPane = new JScrollPane();
-        scrollPane.setBounds(12,47,231,407);
-        contentPane.add(scrollPane);
-        scrollPane.setViewportView(shareChatListPanel);
 
         JButton shareButton = new JButton("공유");
         shareButton.setFont(new Font("함초롬돋움", Font.PLAIN, 13));
@@ -95,6 +90,7 @@ public class TimeShareFrame extends JFrame {
                         Integer roomId = chatRoomController.getRoomId(chatTitle);
                         printWriter.println("shareTime%"+roomId+"%"+userId+"%"+time);
                         printWriter.flush();
+                        setVisible(false);
                     }
                 }
             }

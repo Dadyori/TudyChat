@@ -22,21 +22,28 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Map;
 
 public class TimeGraphFrame {
+    String userId;
     TimerController timerController;
 
-    public static void main(final String[] args) {
-        TimeGraphFrame demo = new TimeGraphFrame();
-        JFreeChart chart = demo.getChart();
-        ChartFrame frame=new ChartFrame("공부시간그래프",chart);
-        frame.setSize(1000,800);
-        frame.setVisible(true);
-        frame.setResizable(false);
+    public TimeGraphFrame(String userId) {
+        this.userId = userId;
+        timerController = new TimerController();
     }
+//
+//    public static void main(final String[] args) {
+//        TimeGraphFrame demo = new TimeGraphFrame();
+//        JFreeChart chart = demo.getChart();
+//        ChartFrame frame=new ChartFrame("공부시간그래프",chart);
+//        frame.setSize(1000,800);
+//        frame.setVisible(true);
+//        frame.setResizable(false);
+//    }
 
     public JFreeChart getChart() {
-        timerController = new TimerController();
+        Map<String, String> studyTimeForMonth = timerController.getStudyTimeForMonth(userId);
 
         // 데이터 생성
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();

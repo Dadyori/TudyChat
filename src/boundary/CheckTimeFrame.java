@@ -99,6 +99,7 @@ public class CheckTimeFrame extends JFrame{
             public void actionPerformed(ActionEvent e) {
                 TimeShareFrame share = new TimeShareFrame(userId, time, bufferedReader, printWriter);
                 share.setVisible(true);
+                setVisible(false);
             }
         });
     }

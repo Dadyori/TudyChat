@@ -150,8 +150,7 @@ public class TimerFrame extends JFrame {
 
         TimerGraphButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                //TimeGraphFrame graph = new TimeGraphFrame();
-                // graph.setVisible(true);
+                TimeGraphFrame graph = new TimeGraphFrame(userId);
             }
         });
 
@@ -230,6 +229,7 @@ public class TimerFrame extends JFrame {
                     e2.printStackTrace();
                 }
                 CheckTimeFrame checktimer = new CheckTimeFrame(userId, timerBuffer, bufferedReader, printWriter);
+                setVisible(false);
                 checktimer.setVisible(true);
             }
         });
