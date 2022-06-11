@@ -70,17 +70,18 @@ public class AddChattingFrame extends JFrame {
 			String temp = userInfo.get("name")+" ("+userInfo.get("id")+")";
 			friendInfo.add(temp);
 		}
+
+
 		JPanel friendPanel = new JPanel();
 		friendPanel.setBounds(12, 30, 230,400);
-		friendPanel.setLayout(new BorderLayout());
+		friendPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
 		checkBoxes = new ArrayList<>();
 		for (String s : friendInfo) {
 			JCheckBox checkBox = new JCheckBox(s);
 			checkBoxes.add(checkBox);
-			friendPanel.add(checkBox, BorderLayout.NORTH);
+			friendPanel.add(checkBox);
 		}
 		contentPane.add(friendPanel);
-
 		JLabel chatLabel = new JLabel("채팅방 이름");
 		chatLabel.setBounds(12, 325, 73, 34);
 		contentPane.add(chatLabel);
