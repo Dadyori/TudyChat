@@ -8,7 +8,7 @@ public class ChatRoomController {
     MemberController memberController = new MemberController();
     Connection connection = null;
     Statement statement = null;
-    String url = "jdbc:mysql://211.202.97.118/tudy_chat?serverTimezone=UTC";
+    String url = "jdbc:mysql://211.202.97.118:3306/tudy_chat?serverTimezone=UTC";
     String user = "newuser";
     String password = "1234";
 //    String url = "jdbc:mysql://localhost/tudy_chat?serverTimezone=UTC";
@@ -23,6 +23,7 @@ public class ChatRoomController {
             statement=connection.createStatement();
         } catch (Exception e){
             System.out.println("MySQL 연동 실패");
+            e.printStackTrace();
         }
     }
 

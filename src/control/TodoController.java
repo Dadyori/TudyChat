@@ -23,6 +23,7 @@ public class TodoController {
             statement=connection.createStatement();
         } catch (Exception e){
             System.out.println("MySQL 연동 실패");
+            e.printStackTrace();
         }
     }
 

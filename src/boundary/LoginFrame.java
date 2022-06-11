@@ -103,7 +103,7 @@ public class LoginFrame extends JFrame implements Runnable {
        JLabel lblNewLabel = new JLabel("\uC544\uC774\uB514");
        lblNewLabel.setForeground(new Color(0, 0, 255));
        lblNewLabel.setFont(new Font("함초롬돋움", Font.PLAIN, 18));
-       lblNewLabel.setBounds(160, 194, 53, 46);
+       lblNewLabel.setBounds(160, 194, 60, 46);
        panel.add(lblNewLabel);
 
        idTextField = new JTextField();
