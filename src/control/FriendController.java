@@ -92,14 +92,16 @@ public class FriendController {
      * 이미 친구인지 확인
      */
     public boolean checkFriendDuplicate(String memberId, String friendId){
-        String sql = "select EXISTS (select friend_id from friend where friend_id='"+friendId+"' limit 1) as success;";
+        String sql = "select EXISTS (select user_id from friend " +
+                "where ((user_id='"+memberId+"' and friend_id='"+friendId+"') " +
+                "or (user_id='"+friendId+"' and friend_id='"+memberId+"')) limit 1) as exist;";
         PreparedStatement pstmt = null;
         boolean success=false;
         try {
             pstmt=connection.prepareStatement(sql);
             ResultSet resultSet = pstmt.executeQuery();
             while (resultSet.next()){
-                success = resultSet.getBoolean("success");
+                success = resultSet.getBoolean("exist");
             }
         } catch (SQLException e){
             e.printStackTrace();
