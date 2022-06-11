@@ -256,7 +256,7 @@ public class LoginFrame extends JFrame implements Runnable {
 
    public void connect() {
       try {
-         socket = new Socket("localhost", 9999);
+         socket = new Socket("211.202.97.118", 9999);
 //         inputStream = new DataInputStream(this.socket.getInputStream());
 //         dataOutputStream = new DataOutputStream(this.socket.getOutputStream());
          bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));

@@ -12,9 +12,12 @@ import java.util.Map;
 public class TimerController {
     Connection connection = null;
     Statement statement = null;
-    String url = "jdbc:mysql://localhost/tudy_chat?serverTimezone=UTC";
-    String user = "root";
-    String password = "dasol";
+    String url = "jdbc:mysql://211.202.97.118/tudy_chat?serverTimezone=UTC";
+    String user = "newuser";
+    String password = "1234";
+//    String url = "jdbc:mysql://localhost/tudy_chat?serverTimezone=UTC";
+//    String user = "root";
+//    String password = "dasol";
     String driverName = "com.mysql.cj.jdbc.Driver";
 
     public TimerController() {
