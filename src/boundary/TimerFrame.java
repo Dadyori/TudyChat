@@ -4,8 +4,7 @@ import control.TimerController;
 
 import java.awt.EventQueue;
 
-import javax.swing.JFrame;
-import javax.swing.JPanel;
+import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.io.BufferedReader;
 import java.io.PrintWriter;
@@ -15,18 +14,13 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
 import java.awt.Color;
-import javax.swing.JLabel;
 import java.awt.Font;
-import javax.swing.JComboBox;
-import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.awt.event.ActionEvent;
 import java.awt.CardLayout;
-import javax.swing.SwingConstants;
-import javax.swing.WindowConstants;
 
 public class TimerFrame extends JFrame {
     TimerController timerController = new TimerController();
@@ -151,6 +145,7 @@ public class TimerFrame extends JFrame {
         TimerGraphButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 TimeGraphFrame graph = new TimeGraphFrame(userId);
+                graph.setVisible(true);
             }
         });
 
@@ -182,12 +177,11 @@ public class TimerFrame extends JFrame {
                                 minLabel.setText(String.format("%02d", min));
                                 secLabel.setText(String.format("%02d", sec));
 
+                                Thread.sleep(1000);
                                 t++;
 
-                                Thread.sleep(1000);
-
                             }catch (InterruptedException e1) {
-                                e1.printStackTrace();
+                                System.out.println("타이머 초기화");
                             }
                         }
                     }
@@ -208,33 +202,49 @@ public class TimerFrame extends JFrame {
 
         finishTimerButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                startTimerButton.setEnabled(false);
-                pauseTimerButton.setEnabled(false);
-                finishTimerButton.setEnabled(false);
+                //측정된 시간이 0일 경우
+                if(hourLabel.getText().equals("00") && minLabel.getText().equals("00") && secLabel.getText().equals("00")) {
+                    if(timeDisplay==null);
+                    else {
+                        timeDisplay.interrupt();
+                        timeDisplay=null;
+                        t=0;
+                    }
 
-                timeDisplay = null;
+                    startTimerButton.setEnabled(true);
+                    pauseTimerButton.setEnabled(false);
+                    finishTimerButton.setEnabled(false);
 
-                timerBuffer =hourLabel.getText();
-                timerBuffer +=minLabel.getText();
-                timerBuffer +=secLabel.getText();
-                //시시분분초초 형식
-                DateFormat sdFormat = new SimpleDateFormat("HHmmss");
-                try {
-                    //측정시간 저장
-                    Date studyTime = sdFormat.parse(timerBuffer);
-                    LocalDateTime todayStudy = LocalDateTime.ofInstant(studyTime.toInstant(), ZoneId.systemDefault());
-                    String studyT = todayStudy.getHour()+":"+todayStudy.getMinute()+":"+todayStudy.getSecond();
-                    timerController.setStudyTime(userId, oldTime.toString(), studyT);
-                } catch (ParseException | SQLException e2) {
-                    e2.printStackTrace();
+                    JOptionPane.showMessageDialog(null, "측정된 시간이 없습니다.");
                 }
-                CheckTimeFrame checktimer = new CheckTimeFrame(userId, timerBuffer, bufferedReader, printWriter);
-                setVisible(false);
-                checktimer.setVisible(true);
+                else {
+                    startTimerButton.setEnabled(false);
+                    pauseTimerButton.setEnabled(false);
+                    finishTimerButton.setEnabled(false);
+
+                    timeDisplay = null;
+
+                    timerBuffer =hourLabel.getText();
+                    timerBuffer +=minLabel.getText();
+                    timerBuffer +=secLabel.getText();
+                    //시시분분초초 형식
+                    DateFormat sdFormat = new SimpleDateFormat("HHmmss");
+                    try {
+                        //측정시간 저장
+                        Date studyTime = sdFormat.parse(timerBuffer);
+                        LocalDateTime todayStudy = LocalDateTime.ofInstant(studyTime.toInstant(), ZoneId.systemDefault());
+                        String studyT = todayStudy.getHour()+":"+todayStudy.getMinute()+":"+todayStudy.getSecond();
+                        timerController.setStudyTime(userId, oldTime.toString(), studyT);
+                    } catch (ParseException | SQLException e2) {
+                        e2.printStackTrace();
+                    }
+                    CheckTimeFrame checktimer = new CheckTimeFrame(userId, timerBuffer, bufferedReader, printWriter);
+                    setVisible(false);
+                    checktimer.setVisible(true);
+                }
             }
         });
 
     }
-
 
 }
