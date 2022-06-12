@@ -74,6 +74,19 @@ public class ChattingFrame extends JPanel {
 			messageBlock.append(msg+"\n");
 		}
 
+		sendTextfield.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				String message = sendTextfield.getText();
+				sendTextfield.setText("");
+				Boolean successSend = chatRoomController.sendMessage(roomId, userId, message);
+				if (successSend){
+					printWriter.println("send%" + roomId + "%" + message);
+					printWriter.flush();
+				}
+			}
+		});
+
 		//전송버튼을 눌렀을 시
 		sendButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
