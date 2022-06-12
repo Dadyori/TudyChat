@@ -244,9 +244,10 @@ public class LoginFrame extends JFrame implements Runnable {
             else if (command[0].equals("successShareTime")) {
                studyFrame = new StudyFrame(command[2], Integer.parseInt(command[1]), bufferedReader, printWriter);
                String hour=command[4].substring(0, 2);
-               String min=command[4].substring(3, 5);
-               String sec=command[4].substring(6, 8);
+               String min=command[4].substring(2, 4);
+               String sec=command[4].substring(4, 6);
                String time = hour+":"+min+":"+sec;
+               System.out.println("시간공유확인"+command[4]);
                String shareTimeMsg = command[3]+"님의 오늘 공부 시간은 "+time+"입니다!\n";
                printWriter.println("send%"+command[1]+"%"+shareTimeMsg);
                printWriter.flush();
