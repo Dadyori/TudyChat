@@ -60,16 +60,16 @@ public class MainFrame extends JFrame{
       this.getContentPane().setForeground(new Color(255, 255, 255));
       this.setSize(900, 700);
       this.setResizable(false);
-      this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+      this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
       this.getContentPane().setLayout(null);
-      
+
       JPanel panel = new JPanel();
       panel.setBackground(new Color(240, 230, 140));
       panel.setForeground(new Color(0, 0, 0));
       panel.setBounds(0, 0, 886, 663);
       this.getContentPane().add(panel);
       panel.setLayout(null);
-      
+
       JLabel mainLabel = new JLabel("TUDY CHAT");
       mainLabel.setBackground(new Color(255, 215, 0));
       mainLabel.setBounds(12, 10, 147, 30);
@@ -80,11 +80,11 @@ public class MainFrame extends JFrame{
       friendFrame = new FriendFrame(userId);
       panel.add(friendFrame);
       friendFrame.setVisible(true);
-      
+
       chattingListFrame = new ChattingListFrame(userId, bufferedReader, printWriter);
       chattingListFrame.setBounds(307, 50, 567, 603);
       panel.add(chattingListFrame);
-      
+
       JButton recallButton = new JButton("\uC0C8\uB85C\uACE0\uCE68");
       recallButton.setBackground(new Color(245, 245, 220));
       recallButton.setForeground(new Color(0, 0, 255));
@@ -98,13 +98,14 @@ public class MainFrame extends JFrame{
       logoutBtn.setFont(new Font("함초롬돋움", Font.PLAIN, 15));
       logoutBtn.setBounds(769, 10, 105, 30);
       panel.add(logoutBtn);
-      
+
       JButton timerButton = new JButton("\uACF5\uBD80\uC2DC\uAC04\uCE21\uC815");
       timerButton.setForeground(new Color(0, 0, 255));
       timerButton.setBackground(new Color(245, 245, 220));
       timerButton.setFont(new Font("함초롬돋움", Font.PLAIN, 30));
       timerButton.setBounds(12, 562, 283, 91);
       panel.add(timerButton);
+
 
 
       //새로고침 버튼 동작 시

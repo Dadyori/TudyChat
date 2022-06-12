@@ -53,62 +53,62 @@ public class SignUpFrame extends JFrame {
 		
 		JLabel nameLabel = new JLabel("이름");
 		nameLabel.setFont(new Font("함초롬돋움", Font.PLAIN, 12));
-		nameLabel.setBounds(27, 37, 66, 15);
+		nameLabel.setBounds(27, 30, 66, 15);
 		contentPane.add(nameLabel);
 		
 		JLabel idLabel = new JLabel("아이디");
 		idLabel.setFont(new Font("함초롬돋움", Font.PLAIN, 12));
-		idLabel.setBounds(27, 94, 57, 15);
+		idLabel.setBounds(27, 87, 57, 15);
 		contentPane.add(idLabel);
 		
 		JLabel pwLabel = new JLabel("비밀번호");
 		pwLabel.setFont(new Font("함초롬돋움", Font.PLAIN, 12));
-		pwLabel.setBounds(27, 157, 57, 15);
+		pwLabel.setBounds(27, 150, 57, 15);
 		contentPane.add(pwLabel);
 		
 		JLabel checkPwLabel = new JLabel("비밀번호 확인");
 		checkPwLabel.setFont(new Font("함초롬돋움", Font.PLAIN, 12));
-		checkPwLabel.setBounds(27, 211, 89, 15);
+		checkPwLabel.setBounds(27, 204, 89, 15);
 		contentPane.add(checkPwLabel);
 		
 		JLabel emailLabel = new JLabel("이메일");
 		emailLabel.setFont(new Font("함초롬돋움", Font.PLAIN, 12));
-		emailLabel.setBounds(27, 267, 57, 15);
+		emailLabel.setBounds(27, 260, 57, 15);
 		contentPane.add(emailLabel);
 		
 		nameTextField = new JTextField();
-		nameTextField.setBounds(27, 62, 238, 21);
+		nameTextField.setBounds(27, 55, 238, 21);
 		contentPane.add(nameTextField);
 		nameTextField.setColumns(10);
 		
 		idTextField = new JTextField();
-		idTextField.setBounds(27, 119, 238, 21);
+		idTextField.setBounds(27, 112, 238, 21);
 		contentPane.add(idTextField);
 		idTextField.setColumns(10);
 		
 		pwTextField = new JTextField();
-		pwTextField.setBounds(27, 180, 238, 21);
+		pwTextField.setBounds(27, 173, 238, 21);
 		contentPane.add(pwTextField);
 		pwTextField.setColumns(10);
 		
 		checkPwTextField = new JTextField();
-		checkPwTextField.setBounds(27, 236, 238, 21);
+		checkPwTextField.setBounds(27, 229, 238, 21);
 		contentPane.add(checkPwTextField);
 		checkPwTextField.setColumns(10);
 		
 		emailTextField = new JTextField();
-		emailTextField.setBounds(27, 289, 238, 21);
+		emailTextField.setBounds(27, 282, 238, 21);
 		contentPane.add(emailTextField);
 		emailTextField.setColumns(10);
 		
 		JButton checkIdButton = new JButton("중복확인");
 		checkIdButton.setFont(new Font("함초롬돋움", Font.PLAIN, 12));
-		checkIdButton.setBounds(288, 118, 97, 23);
+		checkIdButton.setBounds(288, 112, 97, 21);
 		contentPane.add(checkIdButton);
 		
 		JButton signUpButton = new JButton("회원가입");
 		signUpButton.setFont(new Font("함초롬돋움", Font.PLAIN, 12));
-		signUpButton.setBounds(288, 330, 108, 36);
+		signUpButton.setBounds(27, 320, 358, 36);
 		contentPane.add(signUpButton);		
 		
 		//중복확인 버튼 동작시

@@ -90,20 +90,20 @@ public class LoginFrame extends JFrame implements Runnable {
        loginButton.setFont(new Font("함초롬돋움", Font.PLAIN, 15));
        loginButton.setBackground(new Color(245, 245, 220));
        loginButton.setForeground(new Color(0, 0, 255));
-       loginButton.setBounds(135, 400, 126, 46);
+       loginButton.setBounds(84, 400, 232, 39);
        panel.add(loginButton);
 
        JButton signUpButton = new JButton("회원가입");
        signUpButton.setFont(new Font("함초롬돋움", Font.PLAIN, 15));
        signUpButton.setBackground(new Color(245, 245, 220));
        signUpButton.setForeground(new Color(0, 0, 255));
-       signUpButton.setBounds(135, 456, 126, 46);
+       signUpButton.setBounds(84, 450, 232, 39);
        panel.add(signUpButton);
 
        JLabel lblNewLabel = new JLabel("\uC544\uC774\uB514");
        lblNewLabel.setForeground(new Color(0, 0, 255));
        lblNewLabel.setFont(new Font("함초롬돋움", Font.PLAIN, 18));
-       lblNewLabel.setBounds(160, 194, 60, 46);
+       lblNewLabel.setBounds(84, 194, 60, 46);
        panel.add(lblNewLabel);
 
        idTextField = new JTextField();
@@ -115,7 +115,7 @@ public class LoginFrame extends JFrame implements Runnable {
        JLabel lblNewLabel_1 = new JLabel("\uBE44\uBC00\uBC88\uD638");
        lblNewLabel_1.setForeground(new Color(0, 0, 255));
        lblNewLabel_1.setFont(new Font("함초롬돋움", Font.PLAIN, 18));
-       lblNewLabel_1.setBounds(160, 288, 88, 46);
+       lblNewLabel_1.setBounds(84, 284, 88, 46);
        panel.add(lblNewLabel_1);
 
        JLabel lblNewLabel_2 = new JLabel("TUDY");
@@ -134,7 +134,7 @@ public class LoginFrame extends JFrame implements Runnable {
 
        pwTextField = new JPasswordField();
        pwTextField.setBackground(new Color(245, 245, 220));
-       pwTextField.setBounds(84, 328, 232, 46);
+       pwTextField.setBounds(84, 328, 232, 39);
        panel.add(pwTextField);
 
        frame.setVisible(true);
@@ -243,7 +243,11 @@ public class LoginFrame extends JFrame implements Runnable {
             }
             else if (command[0].equals("successShareTime")) {
                studyFrame = new StudyFrame(command[2], Integer.parseInt(command[1]), bufferedReader, printWriter);
-               String shareTimeMsg = command[3]+"님의 오늘 공부 시간은 "+command[4]+"입니다!\n";
+               String hour=command[4].substring(0, 2);
+               String min=command[4].substring(3, 5);
+               String sec=command[4].substring(6, 8);
+               String time = hour+":"+min+":"+sec;
+               String shareTimeMsg = command[3]+"님의 오늘 공부 시간은 "+time+"입니다!\n";
                printWriter.println("send%"+command[1]+"%"+shareTimeMsg);
                printWriter.flush();
             }
