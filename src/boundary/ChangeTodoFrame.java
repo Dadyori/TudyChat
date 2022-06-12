@@ -90,7 +90,7 @@ public class ChangeTodoFrame extends JFrame {
 				String changeTitle = titleTextField.getText();
 				//수정할 이름을 입력하지 않고 수정 버튼을 누르는 경우
 	    		if (changeTitle.isBlank()) {
-					JOptionPane.showMessageDialog(null, "변경 내용을 입력해주세요");
+					//JOptionPane.showMessageDialog(null, "변경 내용을 입력해주세요");
 					dispose();
 	    		}
 	    		else if (todoController.checkTodoDuplicate(chatId, changeTitle)) {
